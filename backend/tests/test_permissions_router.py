@@ -27,7 +27,6 @@ async def seeded_client() -> AsyncClient:
         expire_on_commit=False,
     )
 
-    # Seed permissions
     async with TestSessionLocal() as session:
         permissions_data = [
             ("accounts:create", "accounts", "create", "Create accounts"),
@@ -57,11 +56,13 @@ async def seeded_client() -> AsyncClient:
 
 @pytest.mark.asyncio
 async def test_get_permissions_returns_catalogue(seeded_client: AsyncClient) -> None:
-    """GET /permissions returns the full catalogue."""
+    """GET /permissions returns the full catalogue wrapped in envelope with meta."""
     response = await seeded_client.get("/permissions")
 
     assert response.status_code == 200
-    data = response.json()
+    envelope = response.json()
+    assert envelope["success"] is True
+    data = envelope["data"]
     assert len(data) == 4
     codes = {p["code"] for p in data}
     assert codes == {
@@ -70,6 +71,9 @@ async def test_get_permissions_returns_catalogue(seeded_client: AsyncClient) -> 
         "leads:manage-own",
         "leads:manage-all",
     }
+    assert "meta" in envelope
+    assert envelope["meta"]["count"] == 4
+    assert envelope["meta"]["total"] == 4
 
 
 @pytest.mark.asyncio
@@ -78,29 +82,33 @@ async def test_get_permissions_with_module_filter(seeded_client: AsyncClient) ->
     response = await seeded_client.get("/permissions", params={"module": "leads"})
 
     assert response.status_code == 200
-    data = response.json()
+    envelope = response.json()
+    assert envelope["success"] is True
+    data = envelope["data"]
     assert len(data) == 2
     codes = {p["code"] for p in data}
     assert codes == {"leads:manage-own", "leads:manage-all"}
+    assert envelope["meta"]["count"] == 2
+    assert envelope["meta"]["total"] == 2
 
 
 @pytest.mark.asyncio
 async def test_get_permissions_with_unknown_module_returns_empty(
     seeded_client: AsyncClient,
 ) -> None:
-    """GET /permissions?module=nonexistent returns empty list."""
+    """GET /permissions?module=nonexistent returns empty list in envelope with meta."""
     response = await seeded_client.get("/permissions", params={"module": "nonexistent"})
 
     assert response.status_code == 200
-    assert response.json() == []
+    envelope = response.json()
+    assert envelope["success"] is True
+    assert envelope["data"] == []
+    assert envelope["meta"]["count"] == 0
+    assert envelope["meta"]["total"] == 0
 
 
 def test_no_post_patch_delete_endpoints_for_permissions() -> None:
-    """Route-table inspection: no POST/PATCH/DELETE handlers for /permissions.
-
-    This test asserts the read-only contract programmatically via route inspection,
-    not by sending requests and checking for 404/405.
-    """
+    """Route-table inspection: no POST/PATCH/DELETE handlers for /permissions."""
     forbidden_methods = {"POST", "PATCH", "DELETE", "PUT"}
 
     for route in app.routes:

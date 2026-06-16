@@ -71,12 +71,22 @@ class ResponseEnvelopeMiddleware(BaseHTTPMiddleware):
                 media_type=response.media_type,
             )
 
-        wrapped = {"success": True, "data": original_data}
+        wrapped = self._build_success_envelope(original_data)
 
         return JSONResponse(
             content=wrapped,
             status_code=response.status_code,
         )
+
+    def _build_success_envelope(self, data: any) -> dict:
+        """Build success envelope, detecting paginated responses."""
+        if isinstance(data, dict) and "items" in data and "meta" in data:
+            return {
+                "success": True,
+                "data": data["items"],
+                "meta": data["meta"],
+            }
+        return {"success": True, "data": data}
 
     def _create_error_response(self, exc: AppException) -> JSONResponse:
         """Create error response from AppException."""

@@ -14,18 +14,28 @@ from app.services import permission_service
 router = APIRouter(prefix="/permissions", tags=["permissions"])
 
 
-@router.get("", response_model=list[PermissionResponse])
+@router.get("")
 async def list_permissions(
     module: str | None = Query(
         default=None,
         description="Filter permissions by module (e.g., 'leads', 'accounts')",
     ),
     db: AsyncSession = Depends(get_db),
-) -> list[PermissionResponse]:
+) -> dict:
     """List all permissions, optionally filtered by module.
 
     Returns the full permission catalogue ordered by module and action.
     This endpoint is read-only — the catalogue is seeded at deployment time.
     """
     permissions = await permission_service.list_permissions(db, module=module)
-    return [PermissionResponse.model_validate(p) for p in permissions]
+    items = [PermissionResponse.model_validate(p) for p in permissions]
+    count = len(items)
+    return {
+        "items": [item.model_dump() for item in items],
+        "meta": {
+            "count": count,
+            "total": count,
+            "offset": 0,
+            "limit": count or 1,
+        },
+    }

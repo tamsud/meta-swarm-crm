@@ -79,8 +79,9 @@ async def test_patch_admin_role_name_returns_400_system_role_immutable(
     )
 
     assert response.status_code == 400
-    data = response.json()["detail"]
-    assert data["error_code"] == "SYSTEM_ROLE_IMMUTABLE"
+    envelope = response.json()
+    assert envelope["success"] is False
+    assert envelope["error"]["code"] == "SYSTEM_ROLE_IMMUTABLE"
 
 
 @pytest.mark.asyncio
@@ -94,8 +95,9 @@ async def test_patch_admin_role_permission_ids_returns_400_system_role_immutable
     )
 
     assert response.status_code == 400
-    data = response.json()["detail"]
-    assert data["error_code"] == "SYSTEM_ROLE_IMMUTABLE"
+    envelope = response.json()
+    assert envelope["success"] is False
+    assert envelope["error"]["code"] == "SYSTEM_ROLE_IMMUTABLE"
 
 
 @pytest.mark.asyncio
@@ -106,8 +108,9 @@ async def test_delete_admin_role_returns_400_system_role_immutable(
     response = await seeded_client.delete("/roles/1")
 
     assert response.status_code == 400
-    data = response.json()["detail"]
-    assert data["error_code"] == "SYSTEM_ROLE_IMMUTABLE"
+    envelope = response.json()
+    assert envelope["success"] is False
+    assert envelope["error"]["code"] == "SYSTEM_ROLE_IMMUTABLE"
 
 
 @pytest.mark.asyncio
@@ -124,9 +127,10 @@ async def test_post_roles_with_invalid_permission_id_returns_400(
     )
 
     assert response.status_code == 400
-    data = response.json()["detail"]
-    assert data["error_code"] == "INVALID_PERMISSION_IDS"
-    assert 9999 in data["invalid_ids"]
+    envelope = response.json()
+    assert envelope["success"] is False
+    assert envelope["error"]["code"] == "INVALID_PERMISSION_IDS"
+    assert 9999 in envelope["error"]["invalid_ids"]
 
 
 @pytest.mark.asyncio
@@ -141,7 +145,9 @@ async def test_custom_role_crud_round_trip(seeded_client: AsyncClient) -> None:
         },
     )
     assert create_response.status_code == 201
-    created = create_response.json()
+    envelope = create_response.json()
+    assert envelope["success"] is True
+    created = envelope["data"]
     role_id = created["id"]
     assert created["name"] == "Sales Team"
     assert created["is_system"] is False
@@ -152,12 +158,12 @@ async def test_custom_role_crud_round_trip(seeded_client: AsyncClient) -> None:
         json={"permission_ids": [1, 2, 3, 4]},
     )
     assert update_response.status_code == 200
-    updated = update_response.json()
+    updated = update_response.json()["data"]
     assert updated["permission_count"] == 4
 
     get_response = await seeded_client.get(f"/roles/{role_id}")
     assert get_response.status_code == 200
-    fetched = get_response.json()
+    fetched = get_response.json()["data"]
     assert fetched["permission_count"] == 4
     assert len(fetched["permissions"]) == 4
 
@@ -170,7 +176,7 @@ async def test_custom_role_crud_round_trip(seeded_client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_list_roles_with_pagination(seeded_client: AsyncClient) -> None:
-    """GET /roles supports pagination parameters."""
+    """GET /roles supports pagination parameters and returns meta."""
     for i in range(5):
         await seeded_client.post(
             "/roles",
@@ -179,13 +185,21 @@ async def test_list_roles_with_pagination(seeded_client: AsyncClient) -> None:
 
     response = await seeded_client.get("/roles", params={"offset": 0, "limit": 3})
     assert response.status_code == 200
-    data = response.json()
-    assert len(data) == 3
+    envelope = response.json()
+    assert envelope["success"] is True
+    assert len(envelope["data"]) == 3
+    assert envelope["meta"]["count"] == 3
+    assert envelope["meta"]["total"] == 6
+    assert envelope["meta"]["offset"] == 0
+    assert envelope["meta"]["limit"] == 3
 
     response2 = await seeded_client.get("/roles", params={"offset": 3, "limit": 3})
     assert response2.status_code == 200
-    data2 = response2.json()
-    assert len(data2) == 3
+    envelope2 = response2.json()
+    assert len(envelope2["data"]) == 3
+    assert envelope2["meta"]["count"] == 3
+    assert envelope2["meta"]["total"] == 6
+    assert envelope2["meta"]["offset"] == 3
 
 
 @pytest.mark.asyncio
@@ -193,6 +207,9 @@ async def test_get_nonexistent_role_returns_404(seeded_client: AsyncClient) -> N
     """GET /roles/{id} with invalid id returns 404."""
     response = await seeded_client.get("/roles/9999")
     assert response.status_code == 404
+    envelope = response.json()
+    assert envelope["success"] is False
+    assert envelope["error"]["code"] == "ROLE_NOT_FOUND"
 
 
 @pytest.mark.asyncio
@@ -211,5 +228,6 @@ async def test_create_role_with_duplicate_name_returns_400(
     )
 
     assert response.status_code == 400
-    data = response.json()["detail"]
-    assert data["error_code"] == "DUPLICATE_ROLE_NAME"
+    envelope = response.json()
+    assert envelope["success"] is False
+    assert envelope["error"]["code"] == "DUPLICATE_ROLE_NAME"
