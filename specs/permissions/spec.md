@@ -26,7 +26,7 @@ Administrators composing a custom Role need to browse the full set of available 
 
 **Why this priority**: Without a queryable catalogue, the Roles module's "compose a custom role" UI has nothing to populate its permission checklist with.
 
-**Independent Test**: Call `GET /permissions` and confirm every module in scope (Authentication, Users, Roles, Permissions, Accounts, Contacts, Leads, Opportunities, Activities) has at least one corresponding permission code, and that the catalogue is identical across repeated calls (immutable).
+**Independent Test**: Call `GET /permissions` and confirm every module in scope (Accounts, Contacts, Leads, Opportunities, Activities, Users, Roles, Permissions, Seed) has at least one corresponding permission code, and that the catalogue is identical across repeated calls (immutable). Note: Authentication module has no permission-gated endpoints by design (login is public, /auth/me requires authentication but no specific permission).
 
 **Acceptance Scenarios**:
 
