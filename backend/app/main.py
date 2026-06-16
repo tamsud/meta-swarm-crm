@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.database import engine
-from app.routers import permissions
+from app.routers import permissions, roles
 
 
 @asynccontextmanager
@@ -37,6 +37,7 @@ def create_app() -> FastAPI:
 
     # Register routers
     app.include_router(permissions.router)
+    app.include_router(roles.router)
 
     @app.get("/health")
     async def health_check() -> dict[str, str]:
