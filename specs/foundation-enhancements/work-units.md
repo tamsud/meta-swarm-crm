@@ -17,11 +17,13 @@
 
 ### Internal Sequence
 ```
-WU-FE-1 ──► WU-FE-2 ──► WU-FE-3 ──┬──► WU-FE-6
-                                   │
-WU-FE-4 ──────────────────────────┤
-                                   │
-WU-FE-5 ──────────────────────────┘
+WU-FE-1 ──► WU-FE-2 ──┬──► WU-FE-6
+                       │
+WU-FE-3 ──────────────┤
+                       │
+WU-FE-4 ──────────────┤
+                       │
+WU-FE-5 ──────────────┘
 ```
 
 ---
@@ -46,6 +48,7 @@ WU-FE-5 ────────────────────────
 - [ ] Middleware wraps all 2xx responses in success envelope
 - [ ] Middleware catches `AppException` and returns error envelope with correct status code
 - [ ] Middleware catches `RequestValidationError` and returns 422 with `VALIDATION_ERROR` code
+- [ ] Middleware catches unhandled exceptions and returns 500 with `INTERNAL_ERROR` code (wraps 5xx in envelope per FR-FE-003)
 - [ ] Middleware skips `/health`, `/docs`, `/openapi.json` endpoints
 - [ ] Middleware registered in `main.py`
 
@@ -70,6 +73,8 @@ WU-FE-5 ────────────────────────
 - [ ] List endpoints return data + total count for pagination meta
 - [ ] Existing router tests updated to expect envelope structure
 - [ ] New envelope tests verify: success single, success list with meta, AppException error, validation error
+- [ ] Test verifies empty list returns `{"success": true, "data": [], "meta": {"count": 0, ...}}`
+- [ ] Test verifies unhandled exception returns `{"success": false, "error": {"code": "INTERNAL_ERROR", ...}}` with 500 status
 - [ ] Test verifies `/health` is NOT wrapped
 
 **Success Criteria covered**: SC-FE-001
@@ -93,6 +98,8 @@ WU-FE-5 ────────────────────────
 - [ ] `docker compose up` starts both services successfully
 - [ ] `GET /health` returns 200 from containerized backend
 - [ ] Frontend dev server accessible and shows app shell
+- [ ] **Verify backend auto-reload**: Modify a `.py` file → uvicorn logs show reload → endpoint reflects change
+- [ ] **Verify frontend HMR**: Modify a `.tsx` file → browser updates without full page reload
 
 **Success Criteria covered**: SC-FE-002
 
