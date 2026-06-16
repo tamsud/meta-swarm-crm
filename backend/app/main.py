@@ -3,11 +3,14 @@
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
 from app.database import engine
+from app.exceptions import AppException
 from app.middleware import ResponseEnvelopeMiddleware
 from app.routers import permissions, roles
 
@@ -27,6 +30,34 @@ def create_app() -> FastAPI:
         version="0.1.0",
         lifespan=lifespan,
     )
+
+    @app.exception_handler(AppException)
+    async def app_exception_handler(request: Request, exc: AppException) -> JSONResponse:
+        """Handle AppException with envelope format."""
+        error_body = {"code": exc.error_code, "message": exc.detail}
+        if exc.extra:
+            error_body.update(exc.extra)
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"success": False, "error": error_body},
+        )
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(
+        request: Request, exc: RequestValidationError
+    ) -> JSONResponse:
+        """Handle validation errors with envelope format."""
+        return JSONResponse(
+            status_code=422,
+            content={
+                "success": False,
+                "error": {
+                    "code": "VALIDATION_ERROR",
+                    "message": "Request validation failed",
+                    "details": exc.errors(),
+                },
+            },
+        )
 
     app.add_middleware(
         CORSMiddleware,
