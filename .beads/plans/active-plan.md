@@ -1,44 +1,37 @@
 # Active Plan
 <!-- approved: 2026-06-16 -->
-<!-- gate-iterations: 0 (inherited from approved work-units.md) -->
+<!-- gate-iterations: 2 -->
 <!-- user-approved: true -->
 <!-- status: in-progress -->
 
 ## Task
-Implement Permissions module (WU-PERM-1..5) — foundational catalogue, gates Roles and all downstream modules.
+Implement Roles module (WU-ROLE-1..6) — permission bundles for RBAC, gates Users and Auth.
 
 ## Source
-`specs/permissions/work-units.md` (gate-approved 2026-06-16)
+`specs/roles/work-units.md` (gate-approved 2026-06-16, iteration 2)
 
 ## Execution Sequence
 ```
-WU-PERM-1 ──► WU-PERM-2 ──► WU-PERM-3 ──► WU-PERM-4
-                                              │
-WU-PERM-5 (deferred — runs after all module routers exist)
+WU-ROLE-1 ──► WU-ROLE-2 ──► WU-ROLE-3 ──► WU-ROLE-4 ──┬──► WU-ROLE-5
+                                                        └──► WU-ROLE-6
 ```
 
-## Permission Catalogue (21 codes)
-| Module | Permission Codes |
-|--------|------------------|
-| accounts | accounts:create, accounts:read, accounts:update, accounts:delete |
-| contacts | contacts:create, contacts:read, contacts:update, contacts:delete |
-| leads | leads:manage-own, leads:manage-all |
-| opportunities | opportunities:create, opportunities:read, opportunities:update, opportunities:delete |
-| activities | activities:manage-own, activities:manage-all |
-| users | users:manage, users:manage-self |
-| roles | roles:manage |
-| permissions | permissions:read |
-| seed | seed:manage |
+## Key Decisions from Gate Review
+1. **No Auth dependency**: Router implemented WITHOUT permission gating; Auth adds it later
+2. **Deferred user_count**: Returns 0 until Users module creates users table
+3. **Deferred ROLE_HAS_USERS**: Guard skipped until Users FK exists
+4. **Pagination required**: list_roles(offset, limit) per FR-ROLE-004
 
 ## Work Unit Status
 | WU | Description | Status | Notes |
 |----|-------------|--------|-------|
-| WU-PERM-1 | Schema + Seed Migrations | ✅ completed | 0002 + 0003 with 21 codes |
-| WU-PERM-2 | Backend ORM + Schemas + Service | ✅ completed | Permission model, PermissionResponse, list_permissions() |
-| WU-PERM-3 | Read-Only Router | ✅ completed | GET /permissions with ?module= filter, no POST/PATCH/DELETE |
-| WU-PERM-4 | Frontend Admin Page | ⏳ deferred | Depends on Auth WU-AUTH-8 |
-| WU-PERM-5 | Catalogue Consistency Test | ⏳ deferred | Runs after all module routers exist |
+| WU-ROLE-1 | Schema + Seed Migrations | ⏳ pending | 0004 + 0005 with 3 system roles |
+| WU-ROLE-2 | Backend ORM + Schemas | ⏳ pending | Role, RolePermission, RoleCreate/Update/Response |
+| WU-ROLE-3 | Service Layer + Guards | ⏳ pending | CRUD + system role protection + pagination |
+| WU-ROLE-4 | Router | ⏳ pending | 5 CRUD endpoints, no auth gating yet |
+| WU-ROLE-5 | Frontend Admin Page | ⏳ deferred | Depends on Auth WU-AUTH-8 |
+| WU-ROLE-6 | Integration Tests | ⏳ pending | System role tests, permission validation |
 
 ## Dependencies
-- Upstream: Project Setup WU-SETUP-9 ✅
-- Downstream: Roles WU-ROLE-1 (FK target), Authentication WU-AUTH-3, every module router (WU-PERM-5)
+- Upstream: Permissions WU-PERM-1 ✅
+- Downstream: Users WU-USR-1 (role_id FK), Authentication WU-AUTH-3

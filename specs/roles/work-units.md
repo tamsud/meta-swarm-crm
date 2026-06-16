@@ -67,27 +67,37 @@ WU-ROLE-1 ──► WU-ROLE-2 ──► WU-ROLE-3 ──► WU-ROLE-4 ──┬�
 **File scope**:
 - `backend/app/services/role_service.py` (new — `create_role`, `update_role`, `delete_role`, `list_roles`)
 
-**Definition of Done**:
-- [ ] `update_role` raises `SYSTEM_ROLE_IMMUTABLE` (400) when the target row has `is_system=true`
-- [ ] `delete_role` raises `SYSTEM_ROLE_IMMUTABLE` (400) on system roles
-- [ ] `delete_role` raises `ROLE_HAS_USERS` (409) with the user count when ≥1 user references the role
-- [ ] `list_roles` computes accurate `permission_count` and `user_count` in a single query (no N+1)
+**Deferred behavior** (until Users module WU-USR-1 creates users table):
+- `user_count` returns 0 for all roles
+- `ROLE_HAS_USERS` guard is skipped (no users table to query yet)
+- Users module will add the FK and enable these checks
 
-**Success Criteria covered**: SC-ROLE-002
+**Definition of Done**:
+- [ ] `create_role` / `update_role` validates all `permission_ids` exist in permissions table; raises 400 if any invalid
+- [ ] `update_role` raises `SYSTEM_ROLE_IMMUTABLE` (400) when target has `is_system=true` (name OR permission_ids change)
+- [ ] `delete_role` raises `SYSTEM_ROLE_IMMUTABLE` (400) on system roles
+- [ ] `delete_role` raises `ROLE_HAS_USERS` (409) with user count when ≥1 user references the role (deferred: skip until Users exists)
+- [ ] `list_roles(offset, limit)` supports pagination with configurable defaults
+- [ ] `list_roles` computes accurate `permission_count` and `user_count` in a single query (no N+1); `user_count=0` until Users exists
+
+**Success Criteria covered**: SC-ROLE-002, FR-ROLE-004
 
 ---
 
 ### WU-ROLE-4: Router
 **Tasks**: T-ROLE-6
-**Depends on**: WU-ROLE-3, Authentication WU-AUTH-3 (`require_permission` dependency)
+**Depends on**: WU-ROLE-3
 
 **File scope**:
 - `backend/app/routers/roles.py` (new — GET list, GET one, POST, PATCH, DELETE)
 - `backend/app/main.py` (modify — register router)
 
+**Note**: Router is initially implemented WITHOUT permission gating. Authentication module (WU-AUTH-3) will add `require_permission("roles:manage")` to all endpoints when it's built — Roles is upstream of Auth in the dependency order.
+
 **Definition of Done**:
-- [ ] All 5 endpoints gated by `Depends(require_permission("roles:manage"))`
-- [ ] Error codes map to HTTP correctly (400 / 409 as above)
+- [ ] All 5 CRUD endpoints implemented and functional
+- [ ] Pagination query params (`offset`, `limit`) supported on list endpoint
+- [ ] Error codes map to HTTP correctly (400 SYSTEM_ROLE_IMMUTABLE / 409 ROLE_HAS_USERS)
 - [ ] OpenAPI docs render with the nested `RoleResponse` schema
 
 **Success Criteria covered**: SC-ROLE-001, SC-ROLE-002
@@ -124,8 +134,10 @@ WU-ROLE-1 ──► WU-ROLE-2 ──► WU-ROLE-3 ──► WU-ROLE-4 ──┬�
 
 **Definition of Done**:
 - [ ] Test: PATCH on Admin role name returns 400 `SYSTEM_ROLE_IMMUTABLE`
+- [ ] Test: PATCH on Admin role permission_ids returns 400 `SYSTEM_ROLE_IMMUTABLE`
 - [ ] Test: DELETE on Admin role returns 400 `SYSTEM_ROLE_IMMUTABLE`
-- [ ] Test: DELETE on role with assigned user returns 409 `ROLE_HAS_USERS` with `user_count` in body
-- [ ] Test: Custom role CRUD round trip — create → assign user → exercise the user's permissions → matches exactly the selected subset
+- [ ] Test: DELETE on role with assigned user returns 409 `ROLE_HAS_USERS` with `user_count` in body (deferred until Users exists)
+- [ ] Test: POST /roles with invalid permission_id returns 400
+- [ ] Test: Custom role CRUD round trip — create → update permissions → verify changes persisted
 
 **Success Criteria covered**: SC-ROLE-001, SC-ROLE-002
