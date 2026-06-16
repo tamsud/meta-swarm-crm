@@ -53,6 +53,9 @@ async def _sync_role_permissions(
     for perm_id in to_add:
         db.add(RolePermission(role_id=role.id, permission_id=perm_id))
 
+    if to_add or to_remove:
+        await db.flush()
+
 
 async def create_role(
     db: AsyncSession,
@@ -167,6 +170,7 @@ async def update_role(
         await db.rollback()
         raise DuplicateRoleNameError()
 
+    db.expire_all()
     return await get_role(db, role_id)
 
 
