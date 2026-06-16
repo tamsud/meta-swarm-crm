@@ -8,15 +8,15 @@
 
 | WU | Description | Status |
 |----|-------------|--------|
-| WU-AUTH-1 | JWT Utility | pending |
+| WU-AUTH-1 | JWT Utility | completed |
 | WU-AUTH-2 | Password Utility | completed (prior) |
-| WU-AUTH-3 | Current-User Dependency | pending |
-| WU-AUTH-4 | Auth Router (login + me) | pending |
-| WU-AUTH-5 | Retrofit Permission Gates | pending |
-| WU-AUTH-6 | Frontend AuthContext | pending |
-| WU-AUTH-7 | Frontend Axios Interceptors | pending |
-| WU-AUTH-8 | Login Page + Route Guards | pending |
-| WU-AUTH-9 | Integration Tests | pending |
+| WU-AUTH-3 | Current-User Dependency | completed |
+| WU-AUTH-4 | Auth Router (login + me) | completed |
+| WU-AUTH-5 | Retrofit Permission Gates | completed |
+| WU-AUTH-6 | Frontend AuthContext | completed |
+| WU-AUTH-7 | Frontend Axios Interceptors | completed |
+| WU-AUTH-8 | Login Page + Route Guards | completed |
+| WU-AUTH-9 | Integration Tests | completed (backend only, FE tests deferred) |
 
 ## Execution Order
 
