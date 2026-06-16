@@ -2,37 +2,43 @@
 <!-- approved: 2026-06-16 -->
 <!-- gate-iterations: 0 (inherited from approved work-units.md) -->
 <!-- user-approved: true -->
-<!-- status: completed -->
+<!-- status: in-progress -->
 
 ## Task
-Implement Project Setup module (WU-SETUP-1..9) — first implementation module, gates all 10 downstream modules.
+Implement Permissions module (WU-PERM-1..5) — foundational catalogue, gates Roles and all downstream modules.
 
 ## Source
-`specs/project-setup/work-units.md` (gate-approved 2026-06-16)
+`specs/permissions/work-units.md` (gate-approved 2026-06-16)
 
 ## Execution Sequence
 ```
-WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP-4 ──┐
-             │                                                 │
-             └──► WU-SETUP-5 ──► WU-SETUP-6 ──► WU-SETUP-7 ──┴──► WU-SETUP-8 ──► WU-SETUP-9
+WU-PERM-1 ──► WU-PERM-2 ──► WU-PERM-3 ──► WU-PERM-4
+                                              │
+WU-PERM-5 (deferred — runs after all module routers exist)
 ```
+
+## Permission Catalogue (21 codes)
+| Module | Permission Codes |
+|--------|------------------|
+| accounts | accounts:create, accounts:read, accounts:update, accounts:delete |
+| contacts | contacts:create, contacts:read, contacts:update, contacts:delete |
+| leads | leads:manage-own, leads:manage-all |
+| opportunities | opportunities:create, opportunities:read, opportunities:update, opportunities:delete |
+| activities | activities:manage-own, activities:manage-all |
+| users | users:manage, users:manage-self |
+| roles | roles:manage |
+| permissions | permissions:read |
+| seed | seed:manage |
 
 ## Work Unit Status
 | WU | Description | Status | Notes |
 |----|-------------|--------|-------|
-| WU-SETUP-1 | Toolchain Pinning | ✅ completed | .nvmrc, .python-version |
-| WU-SETUP-2 | Backend Scaffold | ✅ completed | config.py, database.py, main.py + dir structure |
-| WU-SETUP-3 | Alembic Baseline | ✅ completed | 0001_baseline revision |
-| WU-SETUP-4 | Backend Env + Deps | ✅ completed | requirements.txt, .env.example |
-| WU-SETUP-5 | Frontend Scaffold | ✅ completed | Vite + React + Tailwind v4 |
-| WU-SETUP-6 | Frontend Lib + AppShell | ✅ completed | axios, react-query, router |
-| WU-SETUP-7 | Frontend Env + package.json | ✅ completed | pinned deps, engine constraint |
-| WU-SETUP-8 | Root Ignore | ✅ completed | .env files ignored |
-| WU-SETUP-9 | E2E Verification | ✅ completed | FK enforcement verified |
+| WU-PERM-1 | Schema + Seed Migrations | ✅ completed | 0002 + 0003 with 21 codes |
+| WU-PERM-2 | Backend ORM + Schemas + Service | ✅ completed | Permission model, PermissionResponse, list_permissions() |
+| WU-PERM-3 | Read-Only Router | ✅ completed | GET /permissions with ?module= filter, no POST/PATCH/DELETE |
+| WU-PERM-4 | Frontend Admin Page | ⏳ deferred | Depends on Auth WU-AUTH-8 |
+| WU-PERM-5 | Catalogue Consistency Test | ⏳ deferred | Runs after all module routers exist |
 
-## Summary
-Project Setup module complete. All 9 work units implemented and verified:
-- Backend: FastAPI + SQLAlchemy 2.x async + Alembic + SQLite with FK enforcement
-- Frontend: React 18 + Vite + TypeScript + Tailwind CSS v4 + React Query + React Router
-- Toolchain: Node v22.17.1, npm 10.9.2, Python 3.11+
-- All downstream modules (Permissions, Roles, Accounts, Users, Auth, Contacts, Opportunities, Leads, Activities, Deployment) are now unblocked
+## Dependencies
+- Upstream: Project Setup WU-SETUP-9 ✅
+- Downstream: Roles WU-ROLE-1 (FK target), Authentication WU-AUTH-3, every module router (WU-PERM-5)
