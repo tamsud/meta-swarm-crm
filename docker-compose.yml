@@ -1,0 +1,40 @@
+# Development docker-compose for local development
+# Run: docker compose up
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount source for live reload
+      - ./backend:/app
+      # Prevent overwriting container's installed packages
+      - /app/.venv
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///./crm.db
+      - SECRET_KEY=dev-secret-key-change-in-production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      # Mount source for HMR
+      - ./frontend:/app
+      # Prevent overwriting container's node_modules
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
