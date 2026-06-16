@@ -55,7 +55,8 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 **Definition of Done**:
 - [ ] `UserResponse` never serialises `hashed_password` (verified by schema field inspection in a test)
 - [ ] `UserSelfUpdate` whitelists only `display_name` (extra fields rejected with 422 via Pydantic `extra="forbid"`)
-- [ ] `UserCreate` requires `email`, `password`, `role_id`, `display_name`
+- [ ] `UserCreate` requires `email`, `password`, `role_id`; accepts optional `display_name`
+- [ ] `UserUpdate` accepts only `role_id`, `is_active`, `display_name` (all optional, extra fields rejected with 422 via Pydantic `extra="forbid"`)
 
 **Success Criteria covered**: SC-USR-002
 
@@ -71,6 +72,7 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 **Definition of Done**:
 - [ ] `create_user` raises `EMAIL_CONFLICT` (409) on duplicate email (case-insensitive)
 - [ ] `create_user` validates `role_id` exists, else 422
+- [ ] `update_user` validates `role_id` exists (if provided), else 422
 - [ ] `update_user` raises `LAST_ADMIN_LOCKOUT` (400) if the patch would leave zero active Admins (deactivate the last Admin, or move the last Admin to a non-Admin role)
 - [ ] `verify_credentials` returns the user only if active + password matches; rejects inactive users with a distinct code
 - [ ] All password storage goes through `hash_password` — no direct bcrypt calls in this file
@@ -160,6 +162,7 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 - [ ] Test: last-admin deactivation → 400 `LAST_ADMIN_LOCKOUT`
 - [ ] Test: last-admin role change → 400 `LAST_ADMIN_LOCKOUT`
 - [ ] Test: deactivated user's login attempt → 401 `ACCOUNT_INACTIVE`
-- [ ] Test: all 3 seed users can log in and JWT claim `role` matches their assigned role
+- [ ] Test: deactivated user calling protected endpoint (e.g., `GET /users/me`) → 401 `ACCOUNT_INACTIVE`
+- [ ] Test: all 3 seed users can log in — admin@crm.local → Admin role, manager@crm.local → Manager role, sales@crm.local → Sales Rep role
 
 **Success Criteria covered**: SC-USR-001, SC-USR-002, SC-USR-003
