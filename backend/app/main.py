@@ -59,16 +59,18 @@ def create_app() -> FastAPI:
             },
         )
 
+    # Response envelope middleware (wraps all responses in standard format)
+    # Added first so it runs after CORS middleware in request chain
+    app.add_middleware(ResponseEnvelopeMiddleware)
+
+    # CORS middleware - added last so it runs first (handles preflight OPTIONS)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
+        allow_origins=["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "http://127.0.0.1:5174"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
-
-    # Response envelope middleware (wraps all responses in standard format)
-    app.add_middleware(ResponseEnvelopeMiddleware)
 
     # Register routers
     app.include_router(accounts.router)

@@ -25,7 +25,8 @@ class ResponseEnvelopeMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         """Process request and wrap response in envelope."""
-        if self._should_skip(request.url.path):
+        # Skip OPTIONS requests (CORS preflight) and certain paths
+        if request.method == "OPTIONS" or self._should_skip(request.url.path):
             return await call_next(request)
 
         try:
