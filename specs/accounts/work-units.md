@@ -90,7 +90,7 @@ WU-ACCT-1 ──► WU-ACCT-2 ──► WU-ACCT-3 ──┬──► WU-ACCT-4
 - `frontend/src/routes/index.tsx` (modify — register `/accounts`)
 
 **Definition of Done**:
-- [ ] List page paginates, sorts, and search-filters via URL params
+- [ ] List page paginates and search-filters via URL params (sorting deferred — backend doesn't support it yet)
 - [ ] Delete button visible only when `hasPermission("accounts:delete")`
 - [ ] 409 `ACCOUNT_HAS_DEPENDENTS` surfaces both counts in a toast/dialog
 - [ ] Loading + empty states match the mock under `mocks/accounts.html`

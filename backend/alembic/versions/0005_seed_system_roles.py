@@ -5,7 +5,7 @@ Revises: 0004_create_roles
 Create Date: 2026-06-16
 
 System roles:
-- Admin: Full catalogue (21 permissions)
+- Admin: Full catalogue (22 permissions)
 - Manager: All CRM operations + manage-all for leads/activities (16 permissions)
 - Sales Rep: Basic CRM + manage-own for leads/activities (13 permissions)
 
@@ -24,14 +24,14 @@ depends_on: Union[str, Sequence[str], None] = None
 
 # Permission codes for each role
 ADMIN_PERMISSIONS = [
-    # Admin gets ALL permissions (21 total)
+    # Admin gets ALL permissions (22 total)
     'accounts:create', 'accounts:read', 'accounts:update', 'accounts:delete',
     'contacts:create', 'contacts:read', 'contacts:update', 'contacts:delete',
     'leads:manage-own', 'leads:manage-all',
     'opportunities:create', 'opportunities:read', 'opportunities:update', 'opportunities:delete',
     'activities:manage-own', 'activities:manage-all',
     'users:manage', 'users:manage-self',
-    'roles:manage',
+    'roles:read', 'roles:manage',
     'permissions:read',
     'seed:manage',
 ]

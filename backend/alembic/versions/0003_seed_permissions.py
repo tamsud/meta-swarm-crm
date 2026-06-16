@@ -52,7 +52,8 @@ PERMISSIONS = [
     ('users:manage', 'users', 'manage', 'Manage all user accounts (Admin only)'),
     ('users:manage-self', 'users', 'manage-self', 'Manage own user profile'),
 
-    # Roles module (1 code)
+    # Roles module (2 codes)
+    ('roles:read', 'roles', 'read', 'View available roles'),
     ('roles:manage', 'roles', 'manage', 'Manage roles and permission assignments'),
 
     # Permissions module (1 code)

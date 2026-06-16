@@ -4,6 +4,7 @@ import { RequireAuth } from './RequireAuth';
 import { ROUTES } from './config';
 import { DashboardPage } from '../pages/DashboardPage';
 import { AccountsPage } from '../pages/AccountsPage';
+import { AccountDetailPage } from '../features/accounts/AccountDetailPage';
 import { ContactsPage } from '../pages/ContactsPage';
 import { LeadsPage } from '../pages/LeadsPage';
 import { PipelinePage } from '../pages/PipelinePage';
@@ -11,6 +12,7 @@ import { ActivitiesPage } from '../pages/ActivitiesPage';
 import { UsersPage } from '../pages/admin/UsersPage';
 import { MockEmailPage } from '../pages/admin/MockEmailPage';
 import { SeedManagerPage } from '../pages/admin/SeedManagerPage';
+import { ProfilePage } from '../features/users/ProfilePage';
 import { LoginPage } from '../pages/LoginPage';
 
 const router = createBrowserRouter([
@@ -22,6 +24,7 @@ const router = createBrowserRouter([
         children: [
           { path: ROUTES.DASHBOARD, element: <DashboardPage /> },
           { path: ROUTES.ACCOUNTS, element: <AccountsPage /> },
+          { path: ROUTES.ACCOUNT_DETAIL, element: <AccountDetailPage /> },
           { path: ROUTES.CONTACTS, element: <ContactsPage /> },
           { path: ROUTES.LEADS, element: <LeadsPage /> },
           { path: ROUTES.OPPORTUNITIES, element: <PipelinePage /> },
@@ -29,6 +32,7 @@ const router = createBrowserRouter([
           { path: ROUTES.ADMIN_USERS, element: <UsersPage /> },
           { path: ROUTES.ADMIN_MOCK_EMAIL, element: <MockEmailPage /> },
           { path: ROUTES.ADMIN_SEED, element: <SeedManagerPage /> },
+          { path: ROUTES.PROFILE, element: <ProfilePage /> },
         ],
       },
     ],

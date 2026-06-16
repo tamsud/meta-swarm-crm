@@ -14,6 +14,7 @@ import {
 export const ROUTES = {
   DASHBOARD: '/',
   ACCOUNTS: '/accounts',
+  ACCOUNT_DETAIL: '/accounts/:id',
   CONTACTS: '/contacts',
   LEADS: '/leads',
   OPPORTUNITIES: '/opportunities',
@@ -21,6 +22,7 @@ export const ROUTES = {
   ADMIN_USERS: '/admin/users',
   ADMIN_MOCK_EMAIL: '/admin/mock-email',
   ADMIN_SEED: '/admin/seed',
+  PROFILE: '/profile',
   LOGIN: '/login',
 } as const;
 
