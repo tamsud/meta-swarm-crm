@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.database import engine
+from app.middleware import ResponseEnvelopeMiddleware
 from app.routers import permissions, roles
 
 
@@ -34,6 +35,9 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    # Response envelope middleware (wraps all responses in standard format)
+    app.add_middleware(ResponseEnvelopeMiddleware)
 
     # Register routers
     app.include_router(permissions.router)
