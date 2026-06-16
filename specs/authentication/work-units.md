@@ -99,24 +99,22 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 
 ---
 
-### WU-AUTH-5: Retrofit Permission Gates
+### WU-AUTH-5: Retrofit Permission Gates (Existing Routers)
 **Tasks**: T-AUTH-7
-**Depends on**: WU-AUTH-3, AND every other module's routers existing (Accounts, Roles, Users, Permissions, Contacts, Opportunities, Leads, Activities). Run **after** those modules' routers stabilise to avoid touching the same files twice.
+**Depends on**: WU-AUTH-3
 
-**File scope** (modify only):
+**File scope** (modify only — routers that exist NOW):
 - `backend/app/routers/accounts.py`
-- `backend/app/routers/contacts.py`
-- `backend/app/routers/opportunities.py`
-- `backend/app/routers/leads.py`
-- `backend/app/routers/activities.py`
 - `backend/app/routers/users.py`
 - `backend/app/routers/roles.py`
 - `backend/app/routers/permissions.py`
 
+**Note**: Routers for Contacts, Opportunities, Leads, and Activities do not exist yet. Those modules will add their own permission gates during their respective WU-*-3 (Router) work units, using the `get_current_user` and `require_permission` dependencies created by WU-AUTH-3.
+
 **Definition of Done**:
-- [ ] Every protected endpoint has `Depends(get_current_user)` and (where applicable) `Depends(require_permission("..."))`
-- [ ] Permissions module catalogue-consistency test (WU-PERM-5) passes
+- [ ] Every endpoint in accounts.py, users.py, roles.py, permissions.py has `Depends(get_current_user)` and (where applicable) `Depends(require_permission("..."))`
 - [ ] Existing integration tests still pass after the retrofit (no regressions)
+- [ ] All 27 existing backend tests pass
 
 **Success Criteria covered**: SC-AUTH-003
 
@@ -167,8 +165,8 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 - `frontend/src/routes/index.tsx` (modify — register `/login`, wrap protected routes)
 
 **Definition of Done**:
-- [ ] `/login` renders without auth; redirects to dashboard after successful login
-- [ ] `RequireAuth` redirects to `/login` when no token
+- [ ] `/login` renders without auth; redirects to originally requested route (or dashboard if none) after successful login
+- [ ] `RequireAuth` redirects to `/login` when no token, preserving the originally requested URL (via location state or query param)
 - [ ] `RequirePermission(code)` renders a 403 page (not blank) when authenticated but missing permission
 - [ ] Login page matches mock under `mocks/login.html`
 

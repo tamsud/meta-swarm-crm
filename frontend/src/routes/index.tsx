@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { AppShell } from '../components/layout/AppShell';
+import { RequireAuth } from './RequireAuth';
 import { ROUTES } from './config';
 import { DashboardPage } from '../pages/DashboardPage';
 import { AccountsPage } from '../pages/AccountsPage';
@@ -14,17 +15,22 @@ import { LoginPage } from '../pages/LoginPage';
 
 const router = createBrowserRouter([
   {
-    element: <AppShell />,
+    element: <RequireAuth />,
     children: [
-      { path: ROUTES.DASHBOARD, element: <DashboardPage /> },
-      { path: ROUTES.ACCOUNTS, element: <AccountsPage /> },
-      { path: ROUTES.CONTACTS, element: <ContactsPage /> },
-      { path: ROUTES.LEADS, element: <LeadsPage /> },
-      { path: ROUTES.OPPORTUNITIES, element: <PipelinePage /> },
-      { path: ROUTES.ACTIVITIES, element: <ActivitiesPage /> },
-      { path: ROUTES.ADMIN_USERS, element: <UsersPage /> },
-      { path: ROUTES.ADMIN_MOCK_EMAIL, element: <MockEmailPage /> },
-      { path: ROUTES.ADMIN_SEED, element: <SeedManagerPage /> },
+      {
+        element: <AppShell />,
+        children: [
+          { path: ROUTES.DASHBOARD, element: <DashboardPage /> },
+          { path: ROUTES.ACCOUNTS, element: <AccountsPage /> },
+          { path: ROUTES.CONTACTS, element: <ContactsPage /> },
+          { path: ROUTES.LEADS, element: <LeadsPage /> },
+          { path: ROUTES.OPPORTUNITIES, element: <PipelinePage /> },
+          { path: ROUTES.ACTIVITIES, element: <ActivitiesPage /> },
+          { path: ROUTES.ADMIN_USERS, element: <UsersPage /> },
+          { path: ROUTES.ADMIN_MOCK_EMAIL, element: <MockEmailPage /> },
+          { path: ROUTES.ADMIN_SEED, element: <SeedManagerPage /> },
+        ],
+      },
     ],
   },
   { path: ROUTES.LOGIN, element: <LoginPage /> },

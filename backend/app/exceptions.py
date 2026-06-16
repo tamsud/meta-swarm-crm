@@ -161,3 +161,39 @@ class InvalidRoleIdError(AppException):
             f"Role with ID {role_id} does not exist",
             extra={"role_id": role_id},
         )
+
+
+# JWT / Authentication exceptions
+
+
+class TokenExpiredError(AppException):
+    """Raised when a JWT token has expired."""
+
+    status_code = 401
+    error_code = "TOKEN_EXPIRED"
+    detail = "Token has expired"
+
+
+class InvalidTokenError(AppException):
+    """Raised when a JWT token is malformed or has an invalid signature."""
+
+    status_code = 401
+    error_code = "INVALID_TOKEN"
+    detail = "Invalid token"
+
+
+class InsufficientPermissionsError(AppException):
+    """Raised when user lacks a required permission."""
+
+    status_code = 403
+    error_code = "INSUFFICIENT_PERMISSIONS"
+    detail = "You do not have permission to perform this action"
+
+    def __init__(self, permission_code: str | None = None) -> None:
+        if permission_code:
+            super().__init__(
+                f"Missing required permission: {permission_code}",
+                extra={"required_permission": permission_code},
+            )
+        else:
+            super().__init__()

@@ -5,15 +5,17 @@ import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from app.core.security.jwt import create_access_token
 from app.database import Base, get_db
 from app.main import app
 from app.models.permission import Permission
 from app.models.role import Role, RolePermission
+from app.models.user import User
 
 
 @pytest_asyncio.fixture
 async def seeded_client() -> AsyncClient:
-    """Create a test client with seeded permissions and roles."""
+    """Create a test client with seeded permissions, roles, and an authenticated admin user."""
     test_engine = create_async_engine(
         "sqlite+aiosqlite:///:memory:",
         echo=False,
@@ -29,17 +31,38 @@ async def seeded_client() -> AsyncClient:
     )
 
     async with TestSessionLocal() as session:
-        perm = Permission(
-            code="test:read", module="test", action="read", description="Test permission"
-        )
-        session.add(perm)
+        # Seed permissions needed for tests
+        permissions_data = [
+            ("test:read", "test", "read", "Test permission"),
+            ("roles:read", "roles", "read", "Read roles"),
+            ("roles:manage", "roles", "manage", "Manage roles"),
+            ("permissions:read", "permissions", "read", "Read permissions"),
+        ]
+        perm_objects = []
+        for code, module, action, desc in permissions_data:
+            p = Permission(code=code, module=module, action=action, description=desc)
+            session.add(p)
+            perm_objects.append(p)
         await session.flush()
 
+        # Create Admin role with all permissions
         role = Role(id=1, name="Admin", description="Admin role", is_system=True)
         session.add(role)
         await session.flush()
 
-        session.add(RolePermission(role_id=role.id, permission_id=perm.id))
+        for p in perm_objects:
+            session.add(RolePermission(role_id=role.id, permission_id=p.id))
+
+        # Create admin user
+        admin_user = User(
+            id=1,
+            email="admin@test.com",
+            hashed_password="hashed_password",
+            display_name="Admin User",
+            role_id=role.id,
+            is_active=True,
+        )
+        session.add(admin_user)
         await session.commit()
 
     async def override_get_db() -> AsyncSession:
@@ -48,8 +71,15 @@ async def seeded_client() -> AsyncClient:
 
     app.dependency_overrides[get_db] = override_get_db
 
+    # Generate auth token for admin user
+    token = create_access_token({"sub": "1"})
+
     transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=transport,
+        base_url="http://test",
+        headers={"Authorization": f"Bearer {token}"},
+    ) as client:
         yield client
 
     app.dependency_overrides.clear()

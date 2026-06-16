@@ -5,14 +5,17 @@ import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from app.core.security.jwt import create_access_token
 from app.database import Base, get_db
 from app.main import app
 from app.models.permission import Permission
+from app.models.role import Role, RolePermission
+from app.models.user import User
 
 
 @pytest_asyncio.fixture
 async def seeded_client() -> AsyncClient:
-    """Create a test client with seeded permissions."""
+    """Create a test client with seeded permissions and an authenticated admin user."""
     test_engine = create_async_engine(
         "sqlite+aiosqlite:///:memory:",
         echo=False,
@@ -28,16 +31,41 @@ async def seeded_client() -> AsyncClient:
     )
 
     async with TestSessionLocal() as session:
+        # Seed permissions
         permissions_data = [
             ("accounts:create", "accounts", "create", "Create accounts"),
             ("accounts:read", "accounts", "read", "Read accounts"),
             ("leads:manage-own", "leads", "manage-own", "Manage own leads"),
             ("leads:manage-all", "leads", "manage-all", "Manage all leads"),
+            ("permissions:read", "permissions", "read", "Read permissions"),
         ]
+        perm_objects = []
         for code, module, action, desc in permissions_data:
-            session.add(
-                Permission(code=code, module=module, action=action, description=desc)
-            )
+            p = Permission(code=code, module=module, action=action, description=desc)
+            session.add(p)
+            perm_objects.append(p)
+        await session.flush()
+
+        # Create Admin role with all permissions
+        admin_role = Role(
+            id=1, name="Admin", description="Full system access", is_system=True
+        )
+        session.add(admin_role)
+        await session.flush()
+
+        for p in perm_objects:
+            session.add(RolePermission(role_id=admin_role.id, permission_id=p.id))
+
+        # Create admin user
+        admin_user = User(
+            id=1,
+            email="admin@test.com",
+            hashed_password="hashed_password",
+            display_name="Admin User",
+            role_id=admin_role.id,
+            is_active=True,
+        )
+        session.add(admin_user)
         await session.commit()
 
     async def override_get_db() -> AsyncSession:
@@ -46,8 +74,15 @@ async def seeded_client() -> AsyncClient:
 
     app.dependency_overrides[get_db] = override_get_db
 
+    # Generate auth token for admin user
+    token = create_access_token({"sub": "1"})
+
     transport = ASGITransport(app=app)
-    async with AsyncClient(transport=transport, base_url="http://test") as client:
+    async with AsyncClient(
+        transport=transport,
+        base_url="http://test",
+        headers={"Authorization": f"Bearer {token}"},
+    ) as client:
         yield client
 
     app.dependency_overrides.clear()
@@ -63,17 +98,18 @@ async def test_get_permissions_returns_catalogue(seeded_client: AsyncClient) -> 
     envelope = response.json()
     assert envelope["success"] is True
     data = envelope["data"]
-    assert len(data) == 4
+    assert len(data) == 5
     codes = {p["code"] for p in data}
     assert codes == {
         "accounts:create",
         "accounts:read",
         "leads:manage-own",
         "leads:manage-all",
+        "permissions:read",
     }
     assert "meta" in envelope
-    assert envelope["meta"]["count"] == 4
-    assert envelope["meta"]["total"] == 4
+    assert envelope["meta"]["count"] == 5
+    assert envelope["meta"]["total"] == 5
 
 
 @pytest.mark.asyncio

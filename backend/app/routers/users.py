@@ -1,10 +1,5 @@
 """Users router - CRUD endpoints for user management.
 
-Note: This router is initially implemented without permission gating.
-Authentication module (WU-AUTH-3) will add:
-- require_permission("users:manage") to admin endpoints
-- get_current_user to /me endpoints
-
 Permission codes required (from 0003_seed_permissions.py):
 - users:manage (Admin-only for all CRUD operations on other users)
 
@@ -16,7 +11,9 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
+from app.core.security.dependencies import get_current_user, require_permission
 from app.database import get_db
+from app.models.user import User
 from app.schemas.user import (
     UserCreate,
     UserListResponse,
@@ -38,40 +35,32 @@ settings = get_settings()
 @router.get("/me", response_model=UserResponse)
 async def get_current_user_profile(
     db: AsyncSession = Depends(get_db),
-    # TODO: Add current_user: User = Depends(get_current_user) when Auth module is built
+    current_user: User = Depends(get_current_user),
 ) -> UserResponse:
     """Get the current authenticated user's profile.
 
     Returns the user's full profile including role details.
-
-    TODO: Add get_current_user dependency when Auth module is built.
-    Currently returns a placeholder - will be replaced with actual current user.
+    Only requires authentication, no specific permission needed.
     """
-    # TODO: Replace with current_user.id when get_current_user dependency is added
-    # For now, this is a placeholder that will fail until Auth module provides the dependency
-    raise NotImplementedError(
-        "GET /users/me requires get_current_user dependency from Auth module"
-    )
+    # Reload the user with role details (current_user already has role loaded)
+    user = await user_service.get_user(db, current_user.id)
+    return UserResponse.model_validate(user)
 
 
 @router.patch("/me", response_model=UserResponse)
 async def update_current_user_profile(
     user_data: UserSelfUpdate,
     db: AsyncSession = Depends(get_db),
-    # TODO: Add current_user: User = Depends(get_current_user) when Auth module is built
+    current_user: User = Depends(get_current_user),
 ) -> UserResponse:
     """Update the current authenticated user's profile.
 
     Users can only update their own display_name. Attempting to update
     other fields (role_id, is_active, etc.) will return 422.
-
-    TODO: Add get_current_user dependency when Auth module is built.
-    Currently returns a placeholder - will be replaced with actual current user.
+    Only requires authentication, no specific permission needed.
     """
-    # TODO: Replace with current_user.id when get_current_user dependency is added
-    raise NotImplementedError(
-        "PATCH /users/me requires get_current_user dependency from Auth module"
-    )
+    user = await user_service.update_user(db, current_user.id, user_data)
+    return UserResponse.model_validate(user)
 
 
 # -----------------------------------------------------------------------------
@@ -102,10 +91,12 @@ async def list_users(
         description="Max records to return (defaults to DEFAULT_PAGE_SIZE)",
     ),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("users:manage")),
 ) -> dict:
     """List all users with search, filtering, and pagination.
 
     Admin-only endpoint. Non-Admin users will receive 403.
+    Requires users:manage permission.
 
     Query parameters:
     - search: Partial match on email or display_name (case-insensitive)
@@ -113,8 +104,6 @@ async def list_users(
     - is_active: Filter by active status (true/false)
     - offset: Pagination offset
     - limit: Max records per page
-
-    TODO: Add require_permission("users:manage") dependency when Auth module is built.
     """
     effective_limit = limit if limit is not None else settings.DEFAULT_PAGE_SIZE
 
@@ -142,6 +131,7 @@ async def list_users(
 async def create_user(
     user_data: UserCreate,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("users:manage")),
 ) -> UserResponse:
     """Create a new user.
 
@@ -153,8 +143,6 @@ async def create_user(
         201: User created successfully with full profile including role.
         409: Email already exists (DUPLICATE_EMAIL).
         422: Invalid role_id (INVALID_ROLE_ID) or validation error.
-
-    TODO: Add require_permission("users:manage") dependency when Auth module is built.
     """
     user = await user_service.create_user(db, user_data)
     return UserResponse.model_validate(user)
@@ -164,6 +152,7 @@ async def create_user(
 async def get_user(
     user_id: int,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("users:manage")),
 ) -> UserResponse:
     """Get a single user by ID.
 
@@ -172,8 +161,6 @@ async def get_user(
     Returns:
         200: User profile with full role details.
         404: User not found (USER_NOT_FOUND).
-
-    TODO: Add require_permission("users:manage") dependency when Auth module is built.
     """
     user = await user_service.get_user(db, user_id)
     return UserResponse.model_validate(user)
@@ -184,6 +171,7 @@ async def update_user(
     user_id: int,
     user_data: UserUpdate,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("users:manage")),
 ) -> UserResponse:
     """Update an existing user.
 
@@ -202,8 +190,6 @@ async def update_user(
         400: Cannot deactivate or change role of last active Admin (LAST_ADMIN_LOCKOUT).
         404: User not found (USER_NOT_FOUND).
         422: Invalid role_id (INVALID_ROLE_ID) or validation error.
-
-    TODO: Add require_permission("users:manage") dependency when Auth module is built.
     """
     user = await user_service.update_user(db, user_id, user_data)
     return UserResponse.model_validate(user)

@@ -12,7 +12,7 @@ from sqlalchemy import text
 from app.database import engine
 from app.exceptions import AppException
 from app.middleware import ResponseEnvelopeMiddleware
-from app.routers import accounts, permissions, roles, users
+from app.routers import accounts, auth, permissions, roles, users
 
 
 @asynccontextmanager
@@ -72,6 +72,7 @@ def create_app() -> FastAPI:
 
     # Register routers
     app.include_router(accounts.router)
+    app.include_router(auth.router)
     app.include_router(permissions.router)
     app.include_router(roles.router)
     app.include_router(users.router)

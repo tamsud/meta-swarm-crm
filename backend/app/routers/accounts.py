@@ -1,9 +1,5 @@
 """Accounts router - CRUD endpoints for account management.
 
-Note: This router is initially implemented without permission gating.
-Authentication module (WU-AUTH-3) will add require_permission("accounts:{action}")
-to all endpoints when it's built.
-
 Permission codes required (from 0003_seed_permissions.py):
 - accounts:create
 - accounts:read
@@ -14,7 +10,9 @@ Permission codes required (from 0003_seed_permissions.py):
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.security.dependencies import get_current_user, require_permission
 from app.database import get_db
+from app.models.user import User
 from app.schemas.account import AccountCreate, AccountResponse, AccountUpdate
 from app.services import account_service
 
@@ -31,12 +29,12 @@ async def list_accounts(
     offset: int = Query(default=0, ge=0, description="Number of records to skip"),
     limit: int = Query(default=100, ge=1, le=1000, description="Max records to return"),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("accounts:read")),
 ) -> dict:
     """List accounts with search, sorting, and pagination.
 
     Returns accounts matching the search criteria with pagination metadata.
-
-    TODO: Add require_permission("accounts:read") dependency when Auth module is built.
+    Requires accounts:read permission.
     """
     accounts, total = await account_service.list_accounts(
         db, search=search, offset=offset, limit=limit
@@ -57,10 +55,11 @@ async def list_accounts(
 async def get_account(
     account_id: int,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("accounts:read")),
 ) -> AccountResponse:
     """Get a single account by ID.
 
-    TODO: Add require_permission("accounts:read") dependency when Auth module is built.
+    Requires accounts:read permission.
     """
     account = await account_service.get_account(db, account_id)
     return AccountResponse.model_validate(account)
@@ -70,10 +69,11 @@ async def get_account(
 async def create_account(
     account_data: AccountCreate,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("accounts:create")),
 ) -> AccountResponse:
     """Create a new account.
 
-    TODO: Add require_permission("accounts:create") dependency when Auth module is built.
+    Requires accounts:create permission.
     """
     account = await account_service.create_account(db, account_data)
     return AccountResponse.model_validate(account)
@@ -84,10 +84,11 @@ async def update_account(
     account_id: int,
     account_data: AccountUpdate,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("accounts:update")),
 ) -> AccountResponse:
     """Update an existing account.
 
-    TODO: Add require_permission("accounts:update") dependency when Auth module is built.
+    Requires accounts:update permission.
     """
     account = await account_service.update_account(db, account_id, account_data)
     return AccountResponse.model_validate(account)
@@ -97,13 +98,12 @@ async def update_account(
 async def delete_account(
     account_id: int,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_permission("accounts:delete")),
 ) -> None:
     """Delete an account.
 
     Returns 404 if account not found.
     Returns 409 if account has associated contacts or opportunities.
-
-    TODO: Add require_permission("accounts:delete") dependency when Auth module is built.
-    Users without accounts:delete permission will receive 403 once Auth module is implemented.
+    Requires accounts:delete permission.
     """
     await account_service.delete_account(db, account_id)
