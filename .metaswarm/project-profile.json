@@ -1,0 +1,33 @@
+{
+  "metaswarm_version": "1.0.0",
+  "distribution": "plugin",
+  "installed_at": "2026-06-16T00:00:00Z",
+  "updated_at": "2026-06-16T00:00:00Z",
+  "phase": "documentation-only",
+  "detection": {
+    "language": null,
+    "framework": null,
+    "test_runner": null,
+    "linter": null,
+    "formatter": null,
+    "package_manager": null,
+    "type_checker": null,
+    "ci": null,
+    "git_hooks": null
+  },
+  "choices": {
+    "coverage_threshold": null,
+    "external_tools": false,
+    "visual_review": false,
+    "ci_pipeline": false,
+    "git_hooks": false
+  },
+  "commands": {
+    "test": null,
+    "coverage": null,
+    "lint": null,
+    "typecheck": null,
+    "format_check": null
+  },
+  "notes": "No tech stack chosen yet — this repo currently produces CRM SaaS specification documentation only. Re-run /setup once implementation begins to configure coverage/test/CI tooling."
+}
