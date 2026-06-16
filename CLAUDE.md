@@ -25,7 +25,7 @@ Because no tech stack has been chosen for actual implementation yet, the usual m
 - **Frontend**: React 18 + Vite + TypeScript + TailwindCSS SPA, React Query for server state, an in-memory-only `AuthContext` for the JWT (never `localStorage`/`sessionStorage`/cookies), React Router with permission-aware route guards.
 - **Toolchain versions are locked, not just recommended**: Node.js **v22.17.1**, npm **10.9.2**, Python **3.11+** — pinned in `.nvmrc`/`.python-version`/`package.json#engines` by the Project Setup module. Verify with `node --version` / `npm --version` before starting work on any module.
 - **Eleven modules total**, in dependency order: **Project Setup** (foundation — must be built first, zero dependencies) → Permissions → Roles → Accounts (parallelizable) → Users → Authentication → Contacts → Opportunities (parallelizable) → Leads → Activities → **Deployment** (Dockerization + 50+-record seed data — must be built last, depends on all 9 CRM modules). Each module's `specs/<name>/spec.md` documents its own dependency table; there are no circular dependencies.
-- **UI/UX reference**: `mocks/` contains exported HTML/CSS/JS captures of the target frontend's look and feel (Dashboard, Leads, Contacts, Accounts, Opportunities, Activities, User Management, Mail Inbox, Seed Manager, Login).
+- **UI/UX reference**: `specs/mocks/` contains exported HTML/CSS/JS captures of the target frontend's look and feel (Dashboard, Leads, Contacts, Accounts, Opportunities, Activities, User Management, Mail Inbox, Seed Manager, Login).
 
 ## Documentation Structure & Standards
 
