@@ -1,37 +1,39 @@
-# Active Plan
-<!-- approved: 2026-06-16 -->
+# Active Plan: Frontend Shell Module
+<!-- approved: 2026-06-17T10:30:00Z -->
 <!-- gate-iterations: 2 -->
 <!-- user-approved: true -->
 <!-- status: completed -->
+<!-- completed-at: 2026-06-17 -->
 
-## Task
-Implement Roles module (WU-ROLE-1..6) — permission bundles for RBAC, gates Users and Auth.
+## Work Units
 
-## Source
-`specs/roles/work-units.md` (gate-approved 2026-06-16, iteration 2)
+| WU | Description | Status |
+|----|-------------|--------|
+| WU-SHELL-0 | Install Dependencies | completed |
+| WU-SHELL-1 | Route Configuration | completed |
+| WU-SHELL-2 | AppShell Layout | completed |
+| WU-SHELL-3 | Sidebar Component | completed |
+| WU-SHELL-4 | TopBar Component | completed |
+| WU-SHELL-5 | NavItem Component | completed |
+| WU-SHELL-6 | Placeholder Pages | completed |
+| WU-SHELL-7 | Login Page | completed |
+| WU-SHELL-8 | Router Integration | completed |
 
-## Execution Sequence
-```
-WU-ROLE-1 ──► WU-ROLE-2 ──► WU-ROLE-3 ──► WU-ROLE-4 ──┬──► WU-ROLE-5
-                                                        └──► WU-ROLE-6
-```
+## Execution Order
 
-## Key Decisions from Gate Review
-1. **No Auth dependency**: Router implemented WITHOUT permission gating; Auth adds it later
-2. **Deferred user_count**: Returns 0 until Users module creates users table
-3. **Deferred ROLE_HAS_USERS**: Guard skipped until Users FK exists
-4. **Pagination required**: list_roles(offset, limit) per FR-ROLE-004
+1. WU-SHELL-0 (no deps)
+2. WU-SHELL-1 (depends on 0)
+3. WU-SHELL-4 (depends on 0) - parallel with 5
+4. WU-SHELL-5 (depends on 0, 1) - parallel with 4
+5. WU-SHELL-3 (depends on 1, 5)
+6. WU-SHELL-2 (depends on 3, 4)
+7. WU-SHELL-6 (depends on 0) - parallel with 7
+8. WU-SHELL-7 (depends on 0) - parallel with 6
+9. WU-SHELL-8 (depends on all above)
 
-## Work Unit Status
-| WU | Description | Status | Notes |
-|----|-------------|--------|-------|
-| WU-ROLE-1 | Schema + Seed Migrations | ✅ done | 0004 + 0005 with 3 system roles |
-| WU-ROLE-2 | Backend ORM + Schemas | ✅ done | Role, RolePermission, RoleCreate/Update/Response |
-| WU-ROLE-3 | Service Layer + Guards | ✅ done | CRUD + system role protection + pagination |
-| WU-ROLE-4 | Router | ✅ done | 5 CRUD endpoints, no auth gating yet |
-| WU-ROLE-5 | Frontend Admin Page | ⏳ deferred | Depends on Auth WU-AUTH-8 |
-| WU-ROLE-6 | Integration Tests | ✅ done | System role tests, permission validation |
+## Reference Docs
 
-## Dependencies
-- Upstream: Permissions WU-PERM-1 ✅
-- Downstream: Users WU-USR-1 (role_id FK), Authentication WU-AUTH-3
+- specs/frontend-shell/spec.md
+- specs/frontend-shell/plan.md
+- specs/frontend-shell/tasks.md
+- specs/frontend-shell/work-units.md
