@@ -38,6 +38,19 @@ class Role(Base):
         """Return the joined permission objects for this role."""
         return [rp.permission for rp in self.role_permissions]
 
+    @property
+    def permission_count(self) -> int:
+        """Return count of permissions assigned to this role."""
+        return len(self.role_permissions)
+
+    @property
+    def user_count(self) -> int:
+        """Return count of users assigned to this role.
+
+        Deferred: Returns 0 until Users module is implemented.
+        """
+        return 0
+
     def __repr__(self) -> str:
         return f"<Role {self.name}>"
 
