@@ -24,16 +24,17 @@ Because no tech stack has been chosen for actual implementation yet, the usual m
 - **Backend**: Python 3.11+ / FastAPI / SQLAlchemy 2.x (async) / Pydantic v2, SQLite for development with a PostgreSQL-portable schema (config-only migration path). Layered per module: `models/` → `schemas/` → `services/` → `routers/`, with a shared `core/security/` package providing JWT issuance/verification, password hashing, and the `get_current_user` / `require_permission(...)` dependencies every module's routes use.
 - **Frontend**: React 18 + Vite + TypeScript + TailwindCSS SPA, React Query for server state, an in-memory-only `AuthContext` for the JWT (never `localStorage`/`sessionStorage`/cookies), React Router with permission-aware route guards.
 - **Toolchain versions are locked, not just recommended**: Node.js **v22.17.1**, npm **10.9.2**, Python **3.11+** — pinned in `.nvmrc`/`.python-version`/`package.json#engines` by the Project Setup module. Verify with `node --version` / `npm --version` before starting work on any module.
-- **Eleven modules total**, in dependency order: **Project Setup** (foundation — must be built first, zero dependencies) → Permissions → Roles → Accounts (parallelizable) → Users → Authentication → Contacts → Opportunities (parallelizable) → Leads → Activities → **Deployment** (Dockerization + 50+-record seed data — must be built last, depends on all 9 CRM modules). Each module's `specs/<name>/spec.md` documents its own dependency table; there are no circular dependencies.
+- **Thirteen modules total**, in dependency order: **Project Setup** (foundation — must be built first, zero dependencies) → Foundation Enhancements → Frontend Shell → Permissions → Roles → Accounts (parallelizable) → Users → Authentication → Contacts → Opportunities (parallelizable) → Leads → Activities → **Deployment** (Dockerization + 50+-record seed data — must be built last, depends on all 9 CRM modules). Each module's `specs/<name>/spec.md` documents its own dependency table; there are no circular dependencies.
 - **UI/UX reference**: `specs/mocks/` contains exported HTML/CSS/JS captures of the target frontend's look and feel (Dashboard, Leads, Contacts, Accounts, Opportunities, Activities, User Management, Mail Inbox, Seed Manager, Login).
 
 ## Documentation Structure & Standards
 
-Every module lives in `specs/<module-name>/` with exactly three files, in this order of authorship:
+Every module lives in `specs/<module-name>/` with exactly four files, in this order of authorship:
 
 1. **`spec.md`** — module scope/objectives, user stories, functional requirements (prefixed `FR-{MODULE}-NNN`), success criteria (prefixed `SC-{MODULE}-NNN`), key entities, dependencies on other modules.
 2. **`plan.md`** — module architecture, components & responsibilities, data flow within the module, integration points with other modules.
 3. **`tasks.md`** — implementation tasks (prefixed `T-{MODULE}-N`), task sequencing, acceptance criteria, dependencies/prerequisites.
+4. **`work-units.md`** — atomic work units (prefixed `WU-{MODULE}-N`) with Definition of Done checkboxes, file scope, and dependency graph for orchestrated execution.
 
 Cross-module references always link to another module's `spec.md`/`plan.md`/`tasks.md` by relative path (e.g., `[Roles](../roles/spec.md)`) rather than restating that module's content. When a module's documentation changes in a way that affects another module's stated dependency, update both sides of the link.
 

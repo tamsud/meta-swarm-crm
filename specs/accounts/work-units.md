@@ -35,9 +35,9 @@ WU-ACCT-1 ──► WU-ACCT-2 ──► WU-ACCT-3 ──┬──► WU-ACCT-4
 - `backend/alembic/versions/0006_create_accounts.py` (new)
 
 **Definition of Done**:
-- [ ] `accounts` table created with `(id, name, industry, website, phone, address, created_at, updated_at)`
-- [ ] Functional index on `lower(name)` for case-insensitive search
-- [ ] Downgrade reverses cleanly
+- [x] `accounts` table created with `(id, name, industry, website, phone, address, created_at, updated_at)`
+- [x] Functional index on `lower(name)` for case-insensitive search
+- [x] Downgrade reverses cleanly
 
 **Success Criteria covered**: SC-ACCT-002
 
@@ -53,10 +53,10 @@ WU-ACCT-1 ──► WU-ACCT-2 ──► WU-ACCT-3 ──┬──► WU-ACCT-4
 - `backend/app/services/account_service.py` (new — `create`, `get`, `list (search/sort/paginate)`, `update`, `delete (with dependency guard)`, `find_or_create_by_name`)
 
 **Definition of Done**:
-- [ ] `list_accounts` uses the `lower(name)` index for `search` filter (verified via `EXPLAIN`)
-- [ ] `delete_account` counts dependent contacts + opportunities and raises `ACCOUNT_HAS_DEPENDENTS` (409) with both counts in the error payload
-- [ ] `find_or_create_by_name(name)` is case-insensitive and atomic (Leads conversion contract)
-- [ ] Pagination defaults to `Settings.DEFAULT_PAGE_SIZE`
+- [x] `list_accounts` uses the `lower(name)` index for `search` filter (verified via `EXPLAIN`)
+- [x] `delete_account` counts dependent contacts + opportunities and raises `ACCOUNT_HAS_DEPENDENTS` (409) with both counts in the error payload
+- [x] `find_or_create_by_name(name)` is case-insensitive and atomic (Leads conversion contract)
+- [x] Pagination defaults to `Settings.DEFAULT_PAGE_SIZE`
 
 **Success Criteria covered**: SC-ACCT-001, SC-ACCT-002
 
@@ -71,9 +71,9 @@ WU-ACCT-1 ──► WU-ACCT-2 ──► WU-ACCT-3 ──┬──► WU-ACCT-4
 - `backend/app/main.py` (modify — register router)
 
 **Definition of Done**:
-- [ ] Each endpoint gated by `require_permission("accounts:{action}")` matching the seeded catalogue
-- [ ] `DELETE` returns 403 for users without `accounts:delete` regardless of frontend state
-- [ ] Search/sort/paginate query params validated by Pydantic at the boundary
+- [x] Each endpoint gated by `require_permission("accounts:{action}")` matching the seeded catalogue
+- [x] `DELETE` returns 403 for users without `accounts:delete` regardless of frontend state
+- [x] Search/sort/paginate query params validated by Pydantic at the boundary
 
 **Success Criteria covered**: SC-ACCT-003
 
@@ -90,10 +90,10 @@ WU-ACCT-1 ──► WU-ACCT-2 ──► WU-ACCT-3 ──┬──► WU-ACCT-4
 - `frontend/src/routes/index.tsx` (modify — register `/accounts`)
 
 **Definition of Done**:
-- [ ] List page paginates and search-filters via URL params (sorting deferred — backend doesn't support it yet)
-- [ ] Delete button visible only when `hasPermission("accounts:delete")`
-- [ ] 409 `ACCOUNT_HAS_DEPENDENTS` surfaces both counts in a toast/dialog
-- [ ] Loading + empty states match the mock under `mocks/accounts.html`
+- [x] List page paginates and search-filters via URL params (sorting deferred — backend doesn't support it yet)
+- [x] Delete button visible only when `hasPermission("accounts:delete")`
+- [x] 409 `ACCOUNT_HAS_DEPENDENTS` surfaces both counts in a toast/dialog
+- [x] Loading + empty states match the mock under `mocks/accounts.html`
 
 **Success Criteria covered**: SC-ACCT-002, SC-ACCT-003
 
@@ -110,9 +110,9 @@ WU-ACCT-1 ──► WU-ACCT-2 ──► WU-ACCT-3 ──┬──► WU-ACCT-4
 - `frontend/src/routes/index.tsx` (modify — register `/accounts/:id`)
 
 **Definition of Done**:
-- [ ] Detail page renders account fields + tab strip
-- [ ] Tabs render gracefully when their feature module is not yet wired in
-- [ ] After Contacts/Opportunities ship, tabs render lists with no further refactor
+- [x] Detail page renders account fields + tab strip
+- [x] Tabs render gracefully when their feature module is not yet wired in
+- [x] After Contacts/Opportunities ship, tabs render lists with no further refactor
 
 **Success Criteria covered**: SC-ACCT-003
 

@@ -24,10 +24,10 @@ This document decomposes the Frontend Shell module into work units for orchestra
 
 ### Definition of Done
 
-- [ ] `lucide-react` package installed: `npm ls lucide-react` shows version ^0.511
-- [ ] `clsx` package installed: `npm ls clsx` shows version ^2.1
-- [ ] No npm audit high/critical vulnerabilities introduced
-- [ ] `npm run build` still succeeds after installation
+- [x] `lucide-react` package installed: `npm ls lucide-react` shows version ^0.511
+- [x] `clsx` package installed: `npm ls clsx` shows version ^2.1
+- [x] No npm audit high/critical vulnerabilities introduced
+- [x] `npm run build` still succeeds after installation
 
 ### File Scope
 
@@ -55,12 +55,12 @@ cd frontend && npm install lucide-react clsx
 
 ### Definition of Done
 
-- [ ] `frontend/src/routes/config.ts` exports `ROUTES` object with all path constants
-- [ ] `frontend/src/routes/config.ts` exports `NAV_ITEMS` array for main navigation
-- [ ] `frontend/src/routes/config.ts` exports `ADMIN_NAV_ITEMS` array for admin section
-- [ ] Each nav item has: `path`, `label`, `icon` (Lucide component reference)
-- [ ] TypeScript types defined for NavItem interface
-- [ ] No TypeScript errors: `npx tsc --noEmit` passes
+- [x] `frontend/src/routes/config.ts` exports `ROUTES` object with all path constants
+- [x] `frontend/src/routes/config.ts` exports `NAV_ITEMS` array for main navigation
+- [x] `frontend/src/routes/config.ts` exports `ADMIN_NAV_ITEMS` array for admin section
+- [x] Each nav item has: `path`, `label`, `icon` (Lucide component reference)
+- [x] TypeScript types defined for NavItem interface
+- [x] No TypeScript errors: `npx tsc --noEmit` passes
 
 ### File Scope
 
@@ -106,12 +106,12 @@ export interface NavItemConfig {
 
 ### Definition of Done
 
-- [ ] `frontend/src/components/layout/AppShell.tsx` created
-- [ ] Component renders: Sidebar | (TopBar + main content) layout
-- [ ] Uses `flex h-screen` for full viewport height
-- [ ] Main content area has `flex-1 overflow-y-auto`
-- [ ] Uses React Router `<Outlet />` for nested page content
-- [ ] No TypeScript errors
+- [x] `frontend/src/components/layout/AppShell.tsx` created
+- [x] Component renders: Sidebar | (TopBar + main content) layout
+- [x] Uses `flex h-screen` for full viewport height
+- [x] Main content area has `flex-1 overflow-y-auto`
+- [x] Uses React Router `<Outlet />` for nested page content
+- [x] No TypeScript errors
 
 ### File Scope
 
@@ -154,16 +154,16 @@ export function AppShell() {
 
 ### Definition of Done
 
-- [ ] `frontend/src/components/layout/Sidebar.tsx` created
-- [ ] Brand area shows "Sales CRM" with bar chart SVG icon
-- [ ] Renders main nav items from `NAV_ITEMS` config
-- [ ] Renders divider and "ADMIN" label
-- [ ] Renders admin nav items from `ADMIN_NAV_ITEMS` config
-- [ ] Collapse toggle button positioned absolute -right-3 top-6
-- [ ] Collapsed state shows icons only (w-60 → w-[68px])
-- [ ] Styling matches mock: bg-indigo-900, px-3 py-4
-- [ ] Hidden on mobile (< md breakpoint)
-- [ ] No TypeScript errors
+- [x] `frontend/src/components/layout/Sidebar.tsx` created
+- [x] Brand area shows "Sales CRM" with bar chart SVG icon
+- [x] Renders main nav items from `NAV_ITEMS` config
+- [x] Renders divider and "ADMIN" label
+- [x] Renders admin nav items from `ADMIN_NAV_ITEMS` config
+- [x] Collapse toggle button positioned absolute -right-3 top-6
+- [x] Collapsed state shows icons only (w-60 → w-[68px])
+- [x] Styling matches mock: bg-indigo-900, px-3 py-4
+- [x] Hidden on mobile (< md breakpoint)
+- [x] No TypeScript errors
 
 ### File Scope
 
@@ -191,13 +191,13 @@ frontend/src/components/layout/
 
 ### Definition of Done
 
-- [ ] `frontend/src/components/layout/TopBar.tsx` created
-- [ ] Height: h-12, background: bg-white border-b border-slate-100 shadow-xs
-- [ ] Mobile menu button visible only below md breakpoint
-- [ ] User area on right: avatar circle (bg-indigo-600, white initial), email text, chevron
-- [ ] Email hidden on mobile (sm:block)
-- [ ] Avatar shows first letter of hardcoded email "admin@crm.local"
-- [ ] No TypeScript errors
+- [x] `frontend/src/components/layout/TopBar.tsx` created
+- [x] Height: h-12, background: bg-white border-b border-slate-100 shadow-xs
+- [x] Mobile menu button visible only below md breakpoint
+- [x] User area on right: avatar circle (bg-indigo-600, white initial), email text, chevron
+- [x] Email hidden on mobile (sm:block)
+- [x] Avatar shows first letter of hardcoded email "admin@crm.local"
+- [x] No TypeScript errors
 
 ### File Scope
 
@@ -226,15 +226,15 @@ const initial = user.email.charAt(0).toUpperCase();
 
 ### Definition of Done
 
-- [ ] `frontend/src/components/layout/NavItem.tsx` created
-- [ ] Props: `path`, `label`, `icon`, `collapsed` (optional)
-- [ ] Uses `useLocation()` to determine active state
-- [ ] Active styling: `bg-indigo-50 text-indigo-700`
-- [ ] Inactive styling: `text-indigo-100/80 hover:bg-indigo-700 hover:text-white`
-- [ ] Icon: h-4 w-4, 3px gap from label
-- [ ] Sets `aria-current="page"` when active
-- [ ] Label hidden when `collapsed` is true
-- [ ] No TypeScript errors
+- [x] `frontend/src/components/layout/NavItem.tsx` created
+- [x] Props: `path`, `label`, `icon`, `collapsed` (optional)
+- [x] Uses `useLocation()` to determine active state
+- [x] Active styling: `bg-indigo-50 text-indigo-700`
+- [x] Inactive styling: `text-indigo-100/80 hover:bg-indigo-700 hover:text-white`
+- [x] Icon: h-4 w-4, 3px gap from label
+- [x] Sets `aria-current="page"` when active
+- [x] Label hidden when `collapsed` is true
+- [x] No TypeScript errors
 
 ### File Scope
 
@@ -287,19 +287,19 @@ export function NavItem({ path, label, icon: Icon, collapsed }: NavItemProps) {
 
 ### Definition of Done
 
-- [ ] `DashboardPage.tsx` created with title "Dashboard"
-- [ ] `AccountsPage.tsx` created with title "Accounts"
-- [ ] `ContactsPage.tsx` created with title "Contacts"
-- [ ] `LeadsPage.tsx` created with title "Leads"
-- [ ] `PipelinePage.tsx` created with title "Opportunities" (Pipeline in nav)
-- [ ] `ActivitiesPage.tsx` created with title "Activities"
-- [ ] `pages/admin/UsersPage.tsx` created with title "User Management"
-- [ ] `pages/admin/MockEmailPage.tsx` created with title "Mail Inbox"
-- [ ] `pages/admin/SeedManagerPage.tsx` created with title "Seed Manager"
-- [ ] Each page updates document.title via useEffect
-- [ ] Each page has consistent structure: wrapper div, h1 title, placeholder content
-- [ ] Styling: p-4 space-y-3 for wrapper, text-base font-semibold for h1
-- [ ] No TypeScript errors
+- [x] `DashboardPage.tsx` created with title "Dashboard"
+- [x] `AccountsPage.tsx` created with title "Accounts"
+- [x] `ContactsPage.tsx` created with title "Contacts"
+- [x] `LeadsPage.tsx` created with title "Leads"
+- [x] `PipelinePage.tsx` created with title "Opportunities" (Pipeline in nav)
+- [x] `ActivitiesPage.tsx` created with title "Activities"
+- [x] `pages/admin/UsersPage.tsx` created with title "User Management"
+- [x] `pages/admin/MockEmailPage.tsx` created with title "Mail Inbox"
+- [x] `pages/admin/SeedManagerPage.tsx` created with title "Seed Manager"
+- [x] Each page updates document.title via useEffect
+- [x] Each page has consistent structure: wrapper div, h1 title, placeholder content
+- [x] Styling: p-4 space-y-3 for wrapper, text-base font-semibold for h1
+- [x] No TypeScript errors
 
 ### File Scope
 
@@ -350,15 +350,15 @@ export function AccountsPage() {
 
 ### Definition of Done
 
-- [ ] `frontend/src/pages/LoginPage.tsx` created
-- [ ] Split layout: left indigo panel, right white panel
-- [ ] Left panel: Sales CRM branding, tagline, feature bullets
-- [ ] Right panel: Sign in form with email, password, submit button
-- [ ] Demo accounts info displayed below form
-- [ ] Form is non-functional (placeholder) — Auth module adds functionality
-- [ ] No sidebar or top bar rendered (different from AppShell pages)
-- [ ] Updates document.title to "Sign in | CRM"
-- [ ] No TypeScript errors
+- [x] `frontend/src/pages/LoginPage.tsx` created
+- [x] Split layout: left indigo panel, right white panel
+- [x] Left panel: Sales CRM branding, tagline, feature bullets
+- [x] Right panel: Sign in form with email, password, submit button
+- [x] Demo accounts info displayed below form
+- [x] Form is non-functional (placeholder) — Auth module adds functionality
+- [x] No sidebar or top bar rendered (different from AppShell pages)
+- [x] Updates document.title to "Sign in | CRM"
+- [x] No TypeScript errors
 
 ### File Scope
 
@@ -386,16 +386,16 @@ frontend/src/pages/
 
 ### Definition of Done
 
-- [ ] `frontend/src/routes/index.tsx` updated with createBrowserRouter
-- [ ] AppShell wraps all authenticated routes via layout route
-- [ ] LoginPage rendered without AppShell wrapper
-- [ ] All 10 routes render correct page components
-- [ ] Navigation between all pages works correctly
-- [ ] `npm run build` completes without errors
-- [ ] `npm run dev` starts and app loads at localhost:5173
-- [ ] Visual inspection: sidebar matches mock appearance
-- [ ] Visual inspection: navigation highlights active item correctly
-- [ ] Visual inspection: login page has split layout without sidebar
+- [x] `frontend/src/routes/index.tsx` updated with createBrowserRouter
+- [x] AppShell wraps all authenticated routes via layout route
+- [x] LoginPage rendered without AppShell wrapper
+- [x] All 10 routes render correct page components
+- [x] Navigation between all pages works correctly
+- [x] `npm run build` completes without errors
+- [x] `npm run dev` starts and app loads at localhost:5173
+- [x] Visual inspection: sidebar matches mock appearance
+- [x] Visual inspection: navigation highlights active item correctly
+- [x] Visual inspection: login page has split layout without sidebar
 
 ### File Scope
 

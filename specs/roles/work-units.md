@@ -33,11 +33,11 @@ WU-ROLE-1 ──► WU-ROLE-2 ──► WU-ROLE-3 ──► WU-ROLE-4 ──┬�
 - `backend/alembic/versions/0005_seed_system_roles.py` (new — Admin, Manager, Sales Rep with their permission mappings)
 
 **Definition of Done**:
-- [ ] `roles` table has `(id, name UNIQUE, description, is_system BOOL)`
-- [ ] `role_permissions` has `(role_id FK, permission_id FK)` with composite PK
-- [ ] Seed inserts exactly 3 rows with `is_system=true`
-- [ ] Admin's permission map = full catalogue; Manager / Sales Rep maps match spec
-- [ ] Downgrade reverses cleanly
+- [x] `roles` table has `(id, name UNIQUE, description, is_system BOOL)`
+- [x] `role_permissions` has `(role_id FK, permission_id FK)` with composite PK
+- [x] Seed inserts exactly 3 rows with `is_system=true`
+- [x] Admin's permission map = full catalogue; Manager / Sales Rep maps match spec
+- [x] Downgrade reverses cleanly
 
 **Success Criteria covered**: SC-ROLE-001
 
@@ -52,9 +52,9 @@ WU-ROLE-1 ──► WU-ROLE-2 ──► WU-ROLE-3 ──► WU-ROLE-4 ──┬�
 - `backend/app/schemas/role.py` (new — `RoleCreate`, `RoleUpdate`, `RoleResponse` with nested `permissions: list[PermissionResponse]`)
 
 **Definition of Done**:
-- [ ] `Role.permissions` relationship returns the joined permission rows
-- [ ] `RoleCreate` requires `name` + `permission_ids: list[int]`
-- [ ] `RoleResponse` serialises `is_system`, `permission_count`, `user_count`
+- [x] `Role.permissions` relationship returns the joined permission rows
+- [x] `RoleCreate` requires `name` + `permission_ids: list[int]`
+- [x] `RoleResponse` serialises `is_system`, `permission_count`, `user_count`
 
 **Success Criteria covered**: SC-ROLE-001, SC-ROLE-002
 
@@ -73,12 +73,12 @@ WU-ROLE-1 ──► WU-ROLE-2 ──► WU-ROLE-3 ──► WU-ROLE-4 ──┬�
 - Users module will add the FK and enable these checks
 
 **Definition of Done**:
-- [ ] `create_role` / `update_role` validates all `permission_ids` exist in permissions table; raises 400 if any invalid
-- [ ] `update_role` raises `SYSTEM_ROLE_IMMUTABLE` (400) when target has `is_system=true` (name OR permission_ids change)
-- [ ] `delete_role` raises `SYSTEM_ROLE_IMMUTABLE` (400) on system roles
-- [ ] `delete_role` raises `ROLE_HAS_USERS` (409) with user count when ≥1 user references the role (deferred: skip until Users exists)
-- [ ] `list_roles(offset, limit)` supports pagination with configurable defaults
-- [ ] `list_roles` computes accurate `permission_count` and `user_count` in a single query (no N+1); `user_count=0` until Users exists
+- [x] `create_role` / `update_role` validates all `permission_ids` exist in permissions table; raises 400 if any invalid
+- [x] `update_role` raises `SYSTEM_ROLE_IMMUTABLE` (400) when target has `is_system=true` (name OR permission_ids change)
+- [x] `delete_role` raises `SYSTEM_ROLE_IMMUTABLE` (400) on system roles
+- [x] `delete_role` raises `ROLE_HAS_USERS` (409) with user count when ≥1 user references the role (deferred: skip until Users exists)
+- [x] `list_roles(offset, limit)` supports pagination with configurable defaults
+- [x] `list_roles` computes accurate `permission_count` and `user_count` in a single query (no N+1); `user_count=0` until Users exists
 
 **Success Criteria covered**: SC-ROLE-002, FR-ROLE-004
 
@@ -95,10 +95,10 @@ WU-ROLE-1 ──► WU-ROLE-2 ──► WU-ROLE-3 ──► WU-ROLE-4 ──┬�
 **Note**: Router is initially implemented WITHOUT permission gating. Authentication module (WU-AUTH-3) will add `require_permission("roles:manage")` to all endpoints when it's built — Roles is upstream of Auth in the dependency order.
 
 **Definition of Done**:
-- [ ] All 5 CRUD endpoints implemented and functional
-- [ ] Pagination query params (`offset`, `limit`) supported on list endpoint
-- [ ] Error codes map to HTTP correctly (400 SYSTEM_ROLE_IMMUTABLE / 409 ROLE_HAS_USERS)
-- [ ] OpenAPI docs render with the nested `RoleResponse` schema
+- [x] All 5 CRUD endpoints implemented and functional
+- [x] Pagination query params (`offset`, `limit`) supported on list endpoint
+- [x] Error codes map to HTTP correctly (400 SYSTEM_ROLE_IMMUTABLE / 409 ROLE_HAS_USERS)
+- [x] OpenAPI docs render with the nested `RoleResponse` schema
 
 **Success Criteria covered**: SC-ROLE-001, SC-ROLE-002
 
@@ -133,11 +133,11 @@ WU-ROLE-1 ──► WU-ROLE-2 ──► WU-ROLE-3 ──► WU-ROLE-4 ──┬�
 - `backend/tests/test_roles_integration.py` (new)
 
 **Definition of Done**:
-- [ ] Test: PATCH on Admin role name returns 400 `SYSTEM_ROLE_IMMUTABLE`
-- [ ] Test: PATCH on Admin role permission_ids returns 400 `SYSTEM_ROLE_IMMUTABLE`
-- [ ] Test: DELETE on Admin role returns 400 `SYSTEM_ROLE_IMMUTABLE`
-- [ ] Test: DELETE on role with assigned user returns 409 `ROLE_HAS_USERS` with `user_count` in body (deferred until Users exists)
-- [ ] Test: POST /roles with invalid permission_id returns 400
-- [ ] Test: Custom role CRUD round trip — create → update permissions → verify changes persisted
+- [x] Test: PATCH on Admin role name returns 400 `SYSTEM_ROLE_IMMUTABLE`
+- [x] Test: PATCH on Admin role permission_ids returns 400 `SYSTEM_ROLE_IMMUTABLE`
+- [x] Test: DELETE on Admin role returns 400 `SYSTEM_ROLE_IMMUTABLE`
+- [x] Test: DELETE on role with assigned user returns 409 `ROLE_HAS_USERS` with `user_count` in body (deferred until Users exists)
+- [x] Test: POST /roles with invalid permission_id returns 400
+- [x] Test: Custom role CRUD round trip — create → update permissions → verify changes persisted
 
 **Success Criteria covered**: SC-ROLE-001, SC-ROLE-002

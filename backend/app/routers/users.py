@@ -59,7 +59,7 @@ async def update_current_user_profile(
     other fields (role_id, is_active, etc.) will return 422.
     Only requires authentication, no specific permission needed.
     """
-    user = await user_service.update_user(db, current_user.id, user_data)
+    user = await user_service.update_self(db, current_user.id, user_data)
     return UserResponse.model_validate(user)
 
 

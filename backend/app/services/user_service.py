@@ -17,7 +17,7 @@ from app.exceptions import (
     LastAdminLockoutError,
     UserNotFoundError,
 )
-from app.models.role import Role
+from app.models.role import Role, RolePermission
 from app.models.user import User
 from app.schemas.user import UserCreate, UserSelfUpdate, UserUpdate
 
@@ -152,7 +152,11 @@ async def get_user(
     stmt = (
         select(User)
         .where(User.id == user_id)
-        .options(selectinload(User.role))
+        .options(
+            selectinload(User.role)
+            .selectinload(Role.role_permissions)
+            .selectinload(RolePermission.permission)
+        )
     )
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
@@ -234,7 +238,11 @@ async def list_users(
     # Data query with pagination and role loading
     stmt = (
         base_query
-        .options(selectinload(User.role))
+        .options(
+            selectinload(User.role)
+            .selectinload(Role.role_permissions)
+            .selectinload(RolePermission.permission)
+        )
         .order_by(User.id)
         .offset(offset)
         .limit(limit)

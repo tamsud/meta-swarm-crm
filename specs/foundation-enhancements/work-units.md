@@ -42,15 +42,15 @@ WU-FE-5 ──────────────┘
 - `backend/app/main.py` (modify — register middleware)
 
 **Definition of Done**:
-- [ ] `ApiResponse[T]` generic with `success: Literal[True]`, `data: T`
-- [ ] `PaginatedResponse[T]` with `meta: PaginatedMeta` containing `count`, `total`, `offset`, `limit`
-- [ ] `ErrorResponse` with `success: Literal[False]`, `error: ApiError`
-- [ ] Middleware wraps all 2xx responses in success envelope
-- [ ] Middleware catches `AppException` and returns error envelope with correct status code
-- [ ] Middleware catches `RequestValidationError` and returns 422 with `VALIDATION_ERROR` code
-- [ ] Middleware catches unhandled exceptions and returns 500 with `INTERNAL_ERROR` code (wraps 5xx in envelope per FR-FE-003)
-- [ ] Middleware skips `/health`, `/docs`, `/openapi.json` endpoints
-- [ ] Middleware registered in `main.py`
+- [x] `ApiResponse[T]` generic with `success: Literal[True]`, `data: T`
+- [x] `PaginatedResponse[T]` with `meta: PaginatedMeta` containing `count`, `total`, `offset`, `limit`
+- [x] `ErrorResponse` with `success: Literal[False]`, `error: ApiError`
+- [x] Middleware wraps all 2xx responses in success envelope
+- [x] Middleware catches `AppException` and returns error envelope with correct status code
+- [x] Middleware catches `RequestValidationError` and returns 422 with `VALIDATION_ERROR` code
+- [x] Middleware catches unhandled exceptions and returns 500 with `INTERNAL_ERROR` code (wraps 5xx in envelope per FR-FE-003)
+- [x] Middleware skips `/health`, `/docs`, `/openapi.json` endpoints
+- [x] Middleware registered in `main.py`
 
 **Success Criteria covered**: SC-FE-001 (partial)
 
@@ -68,14 +68,14 @@ WU-FE-5 ──────────────┘
 - `backend/tests/test_roles_integration.py` (modify — update assertions)
 
 **Definition of Done**:
-- [ ] `permissions.py` returns raw `list[PermissionResponse]`, no manual wrapping
-- [ ] `roles.py` returns raw data; `_map_exception_to_http` removed; raises `AppException` directly
-- [ ] List endpoints return data + total count for pagination meta
-- [ ] Existing router tests updated to expect envelope structure
-- [ ] New envelope tests verify: success single, success list with meta, AppException error, validation error
-- [ ] Test verifies empty list returns `{"success": true, "data": [], "meta": {"count": 0, ...}}`
-- [ ] Test verifies unhandled exception returns `{"success": false, "error": {"code": "INTERNAL_ERROR", ...}}` with 500 status
-- [ ] Test verifies `/health` is NOT wrapped
+- [x] `permissions.py` returns raw `list[PermissionResponse]`, no manual wrapping
+- [x] `roles.py` returns raw data; `_map_exception_to_http` removed; raises `AppException` directly
+- [x] List endpoints return data + total count for pagination meta
+- [x] Existing router tests updated to expect envelope structure
+- [x] New envelope tests verify: success single, success list with meta, AppException error, validation error
+- [x] Test verifies empty list returns `{"success": true, "data": [], "meta": {"count": 0, ...}}`
+- [x] Test verifies unhandled exception returns `{"success": false, "error": {"code": "INTERNAL_ERROR", ...}}` with 500 status
+- [x] Test verifies `/health` is NOT wrapped
 
 **Success Criteria covered**: SC-FE-001
 
@@ -91,15 +91,15 @@ WU-FE-5 ──────────────┘
 - `docker-compose.yml` (new)
 
 **Definition of Done**:
-- [ ] `backend/Dockerfile`: Python 3.11+, installs deps, runs migrations on start, uvicorn with --reload
-- [ ] `frontend/Dockerfile`: Node 22, installs deps, runs `npm run dev -- --host 0.0.0.0`
-- [ ] `docker-compose.yml`: defines both services, exposes ports 8000 and 5173
-- [ ] Source directories mounted as volumes for live reload
-- [ ] `docker compose up` starts both services successfully
-- [ ] `GET /health` returns 200 from containerized backend
-- [ ] Frontend dev server accessible and shows app shell
-- [ ] **Verify backend auto-reload**: Modify a `.py` file → uvicorn logs show reload → endpoint reflects change
-- [ ] **Verify frontend HMR**: Modify a `.tsx` file → browser updates without full page reload
+- [x] `backend/Dockerfile`: Python 3.11+, installs deps, runs migrations on start, uvicorn with --reload
+- [x] `frontend/Dockerfile`: Node 22, installs deps, runs `npm run dev -- --host 0.0.0.0`
+- [x] `docker-compose.yml`: defines both services, exposes ports 8000 and 5173
+- [x] Source directories mounted as volumes for live reload
+- [x] `docker compose up` starts both services successfully
+- [x] `GET /health` returns 200 from containerized backend
+- [x] Frontend dev server accessible and shows app shell
+- [x] **Verify backend auto-reload**: Modify a `.py` file → uvicorn logs show reload → endpoint reflects change
+- [x] **Verify frontend HMR**: Modify a `.tsx` file → browser updates without full page reload
 
 **Success Criteria covered**: SC-FE-002
 
@@ -117,12 +117,12 @@ WU-FE-5 ──────────────┘
 - `CLAUDE.md` (modify)
 
 **Definition of Done**:
-- [ ] Root `README.md`: project name, description, tech stack, Docker quick start, native quick start, links to sub-READMEs
-- [ ] `backend/README.md`: setup, env vars (`.env.example` reference), migrations, server start, API docs link
-- [ ] `frontend/README.md`: setup, env vars, folder structure, dev server start (replaces Vite boilerplate)
-- [ ] `mocks/` moved to `specs/mocks/` using `git mv`
-- [ ] `CLAUDE.md` reference updated from `mocks/` to `specs/mocks/`
-- [ ] All files in `specs/mocks/` accessible after move
+- [x] Root `README.md`: project name, description, tech stack, Docker quick start, native quick start, links to sub-READMEs
+- [x] `backend/README.md`: setup, env vars (`.env.example` reference), migrations, server start, API docs link
+- [x] `frontend/README.md`: setup, env vars, folder structure, dev server start (replaces Vite boilerplate)
+- [x] `mocks/` moved to `specs/mocks/` using `git mv`
+- [x] `CLAUDE.md` reference updated from `mocks/` to `specs/mocks/`
+- [x] All files in `specs/mocks/` accessible after move
 
 **Success Criteria covered**: SC-FE-003
 
@@ -136,12 +136,12 @@ WU-FE-5 ──────────────┘
 - `backend/app/seed.py` (new)
 
 **Definition of Done**:
-- [ ] Script creates 3-5 custom roles with varied permission sets
-- [ ] Idempotent — checks for existing data before inserting
-- [ ] Runnable via `python -m app.seed` from backend directory
-- [ ] Outputs summary: "Created X roles, skipped Y (already exist)"
-- [ ] Works against freshly migrated empty database
-- [ ] Created roles have valid, resolvable permission associations
+- [x] Script creates 3-5 custom roles with varied permission sets
+- [x] Idempotent — checks for existing data before inserting
+- [x] Runnable via `python -m app.seed` from backend directory
+- [x] Outputs summary: "Created X roles, skipped Y (already exist)"
+- [x] Works against freshly migrated empty database
+- [x] Created roles have valid, resolvable permission associations
 
 **Success Criteria covered**: SC-FE-004
 
@@ -154,14 +154,14 @@ WU-FE-5 ──────────────┘
 **File scope**: None (verification only)
 
 **Definition of Done**:
-- [ ] `docker compose up` from clean checkout — both services start
-- [ ] `GET /health` returns `{"status": "ok", ...}` (not wrapped — excluded)
-- [ ] `GET /permissions` returns `{"success": true, "data": [...], "meta": {...}}`
-- [ ] `GET /roles` returns `{"success": true, "data": [...], "meta": {...}}`
-- [ ] `POST /roles` with invalid data returns `{"success": false, "error": {"code": "VALIDATION_ERROR", ...}}`
-- [ ] `PATCH /roles/1` returns `{"success": false, "error": {"code": "SYSTEM_ROLE_IMMUTABLE", ...}}`
-- [ ] Seed script runs successfully inside Docker container
-- [ ] All READMEs render correctly in GitHub/viewer
+- [x] `docker compose up` from clean checkout — both services start
+- [x] `GET /health` returns `{"status": "ok", ...}` (not wrapped — excluded)
+- [x] `GET /permissions` returns `{"success": true, "data": [...], "meta": {...}}`
+- [x] `GET /roles` returns `{"success": true, "data": [...], "meta": {...}}`
+- [x] `POST /roles` with invalid data returns `{"success": false, "error": {"code": "VALIDATION_ERROR", ...}}`
+- [x] `PATCH /roles/1` returns `{"success": false, "error": {"code": "SYSTEM_ROLE_IMMUTABLE", ...}}`
+- [x] Seed script runs successfully inside Docker container
+- [x] All READMEs render correctly in GitHub/viewer
 
 **Success Criteria covered**: SC-FE-001, SC-FE-002, SC-FE-003, SC-FE-004
 

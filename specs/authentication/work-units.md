@@ -37,10 +37,10 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 - `backend/tests/test_jwt.py` (new)
 
 **Definition of Done**:
-- [ ] HS256 with `JWT_SECRET_KEY` from `Settings`
-- [ ] Configurable expiry (default per spec) via env var
-- [ ] `decode_access_token` raises distinct error for expired vs malformed vs signature-invalid
-- [ ] Standalone unit tests pass with no DB dependency
+- [x] HS256 with `JWT_SECRET_KEY` from `Settings`
+- [x] Configurable expiry (default per spec) via env var
+- [x] `decode_access_token` raises distinct error for expired vs malformed vs signature-invalid
+- [x] Standalone unit tests pass with no DB dependency
 
 **Success Criteria covered**: SC-AUTH-003
 
@@ -56,9 +56,9 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 - `backend/tests/test_passwords.py` (new)
 
 **Definition of Done**:
-- [ ] bcrypt cost ≥ 12 (asserted in a test by inspecting the hash's cost field)
-- [ ] `verify_password` is constant-time (bcrypt's default)
-- [ ] Unit tests cover correct / incorrect / malformed-hash cases
+- [x] bcrypt cost ≥ 12 (asserted in a test by inspecting the hash's cost field)
+- [x] `verify_password` is constant-time (bcrypt's default)
+- [x] Unit tests cover correct / incorrect / malformed-hash cases
 
 **Success Criteria covered**: SC-AUTH-001
 
@@ -72,10 +72,10 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 - `backend/app/core/security/dependencies.py` (new — `get_current_user`, `require_permission(code)`)
 
 **Definition of Done**:
-- [ ] `get_current_user` decodes the token → loads User → loads Role → resolves effective Permissions in a single query (no N+1)
-- [ ] Returns 401 on missing/invalid/expired token
-- [ ] Returns 401 `ACCOUNT_INACTIVE` if the user row has `is_active=false`
-- [ ] `require_permission("code")` returns a dependency factory; raises 403 when the resolved permission set doesn't include the code
+- [x] `get_current_user` decodes the token → loads User → loads Role → resolves effective Permissions in a single query (no N+1)
+- [x] Returns 401 on missing/invalid/expired token
+- [x] Returns 401 `ACCOUNT_INACTIVE` if the user row has `is_active=false`
+- [x] `require_permission("code")` returns a dependency factory; raises 403 when the resolved permission set doesn't include the code
 
 **Success Criteria covered**: SC-AUTH-003
 
@@ -90,10 +90,10 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 - `backend/app/main.py` (modify — register router)
 
 **Definition of Done**:
-- [ ] `POST /auth/login` returns JWT on success, 401 (`INVALID_CREDENTIALS`) on bad password, 401 (`ACCOUNT_INACTIVE`) when deactivated
-- [ ] JWT claim `role` matches the user's role name
-- [ ] `GET /auth/me` returns `{user, role, permissions: [codes]}` non-empty for seed users
-- [ ] Token NEVER appears in the response cookie (response carries it in JSON body only)
+- [x] `POST /auth/login` returns JWT on success, 401 (`INVALID_CREDENTIALS`) on bad password, 401 (`ACCOUNT_INACTIVE`) when deactivated
+- [x] JWT claim `role` matches the user's role name
+- [x] `GET /auth/me` returns `{user, role, permissions: [codes]}` non-empty for seed users
+- [x] Token NEVER appears in the response cookie (response carries it in JSON body only)
 
 **Success Criteria covered**: SC-AUTH-001, SC-AUTH-003
 
@@ -112,9 +112,9 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 **Note**: Routers for Contacts, Opportunities, Leads, and Activities do not exist yet. Those modules will add their own permission gates during their respective WU-*-3 (Router) work units, using the `get_current_user` and `require_permission` dependencies created by WU-AUTH-3.
 
 **Definition of Done**:
-- [ ] Every endpoint in accounts.py, users.py, roles.py, permissions.py has `Depends(get_current_user)` and (where applicable) `Depends(require_permission("..."))`
-- [ ] Existing integration tests still pass after the retrofit (no regressions)
-- [ ] All 27 existing backend tests pass
+- [x] Every endpoint in accounts.py, users.py, roles.py, permissions.py has `Depends(get_current_user)` and (where applicable) `Depends(require_permission("..."))`
+- [x] Existing integration tests still pass after the retrofit (no regressions)
+- [x] All 27 existing backend tests pass
 
 **Success Criteria covered**: SC-AUTH-003
 
@@ -129,10 +129,10 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 - `frontend/src/context/useAuth.ts` (new — `useAuth`, `usePermission`)
 
 **Definition of Done**:
-- [ ] Token stored only in React state (NEVER `localStorage`, `sessionStorage`, or cookies — verified by grep + manual devtools inspection)
-- [ ] `login(email, password)` calls `POST /auth/login`, then `GET /auth/me`, then populates context
-- [ ] `logout()` clears state immediately
-- [ ] `hasPermission(code)` returns true iff `code` in current user's permission set
+- [x] Token stored only in React state (NEVER `localStorage`, `sessionStorage`, or cookies — verified by grep + manual devtools inspection)
+- [x] `login(email, password)` calls `POST /auth/login`, then `GET /auth/me`, then populates context
+- [x] `logout()` clears state immediately
+- [x] `hasPermission(code)` returns true iff `code` in current user's permission set
 
 **Success Criteria covered**: SC-AUTH-002
 
@@ -146,9 +146,9 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 - `frontend/src/lib/api.ts` (modify — request + response interceptors)
 
 **Definition of Done**:
-- [ ] Request interceptor attaches `Authorization: Bearer <token>` when AuthContext has one
-- [ ] Response interceptor catches 401 → clears AuthContext → redirects to `/login`
-- [ ] Interceptors do NOT redirect on `/auth/login`'s own 401 (login form must show inline error)
+- [x] Request interceptor attaches `Authorization: Bearer <token>` when AuthContext has one
+- [x] Response interceptor catches 401 → clears AuthContext → redirects to `/login`
+- [x] Interceptors do NOT redirect on `/auth/login`'s own 401 (login form must show inline error)
 
 **Success Criteria covered**: SC-AUTH-003
 
@@ -165,10 +165,10 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 - `frontend/src/routes/index.tsx` (modify — register `/login`, wrap protected routes)
 
 **Definition of Done**:
-- [ ] `/login` renders without auth; redirects to originally requested route (or dashboard if none) after successful login
-- [ ] `RequireAuth` redirects to `/login` when no token, preserving the originally requested URL (via location state or query param)
-- [ ] `RequirePermission(code)` renders a 403 page (not blank) when authenticated but missing permission
-- [ ] Login page matches mock under `mocks/login.html`
+- [x] `/login` renders without auth; redirects to originally requested route (or dashboard if none) after successful login
+- [x] `RequireAuth` redirects to `/login` when no token, preserving the originally requested URL (via location state or query param)
+- [x] `RequirePermission(code)` renders a 403 page (not blank) when authenticated but missing permission
+- [x] Login page matches mock under `mocks/login.html`
 
 **Success Criteria covered**: SC-AUTH-001
 
@@ -183,10 +183,10 @@ WU-AUTH-2 ─┴─► WU-AUTH-3 ──► WU-AUTH-4 ──► WU-AUTH-5 (retrof
 - `frontend/src/__tests__/auth.spec.tsx` (new — basic flow)
 
 **Definition of Done**:
-- [ ] Backend: login → protected call → logout → protected call returns 401
-- [ ] Backend: expired token returns 401
-- [ ] Backend: deactivated user login returns 401 `ACCOUNT_INACTIVE`
-- [ ] Frontend: devtools inspection (or equivalent test) confirms token NOT in localStorage/sessionStorage/cookies
-- [ ] Frontend: 401 response triggers redirect to `/login`
+- [x] Backend: login → protected call → logout → protected call returns 401
+- [x] Backend: expired token returns 401
+- [x] Backend: deactivated user login returns 401 `ACCOUNT_INACTIVE`
+- [x] Frontend: devtools inspection (or equivalent test) confirms token NOT in localStorage/sessionStorage/cookies
+- [x] Frontend: 401 response triggers redirect to `/login`
 
 **Success Criteria covered**: SC-AUTH-001, SC-AUTH-002, SC-AUTH-003

@@ -33,10 +33,10 @@ WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP
 - `.python-version` (new)
 
 **Definition of Done**:
-- [ ] `node --version` reports `v22.17.1` on the dev machine
-- [ ] `npm --version` reports `10.9.2`
-- [ ] `.nvmrc` contents = `22.17.1`
-- [ ] `.python-version` contents = `3.11`
+- [x] `node --version` reports `v22.17.1` on the dev machine
+- [x] `npm --version` reports `10.9.2`
+- [x] `.nvmrc` contents = `22.17.1`
+- [x] `.python-version` contents = `3.11`
 
 **Success Criteria covered**: SC-SETUP-001
 
@@ -57,11 +57,11 @@ WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP
 - `backend/app/main.py` (new — FastAPI app factory, CORS, `GET /health`)
 
 **Definition of Done**:
-- [ ] All listed directories exist with `__init__.py` placeholders
-- [ ] `Settings` exposes `DATABASE_URL`, `JWT_SECRET_KEY`, pagination defaults via env vars
-- [ ] `database.py` enforces `PRAGMA foreign_keys=ON` on every connection (verified by a unit test)
-- [ ] `uvicorn backend.app.main:app` starts cleanly
-- [ ] `GET /health` returns 200 with body confirming DB connectivity
+- [x] All listed directories exist with `__init__.py` placeholders
+- [x] `Settings` exposes `DATABASE_URL`, `JWT_SECRET_KEY`, pagination defaults via env vars
+- [x] `database.py` enforces `PRAGMA foreign_keys=ON` on every connection (verified by a unit test)
+- [x] `uvicorn backend.app.main:app` starts cleanly
+- [x] `GET /health` returns 200 with body confirming DB connectivity
 
 **Success Criteria covered**: SC-SETUP-002, SC-SETUP-003
 
@@ -79,9 +79,9 @@ WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP
 - `backend/alembic/versions/0001_baseline.py` (new — empty revision)
 
 **Definition of Done**:
-- [ ] `alembic upgrade head` against a fresh SQLite file applies exactly one revision (`0001_baseline`)
-- [ ] Zero CRM tables created by the baseline
-- [ ] `alembic.ini` `sqlalchemy.url` is read from `Settings`, not hardcoded
+- [x] `alembic upgrade head` against a fresh SQLite file applies exactly one revision (`0001_baseline`)
+- [x] Zero CRM tables created by the baseline
+- [x] `alembic.ini` `sqlalchemy.url` is read from `Settings`, not hardcoded
 
 **Success Criteria covered**: SC-SETUP-003
 
@@ -98,9 +98,9 @@ WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP
 - `backend/requirements-dev.txt` (new — pinned)
 
 **Definition of Done**:
-- [ ] `pip install -r requirements.txt -r requirements-dev.txt` succeeds on Python 3.11 with zero conflicts
-- [ ] `.env.example` lists every variable read by `app/config.py`
-- [ ] `cp .env.example .env && uvicorn ...` produces zero missing-variable errors
+- [x] `pip install -r requirements.txt -r requirements-dev.txt` succeeds on Python 3.11 with zero conflicts
+- [x] `.env.example` lists every variable read by `app/config.py`
+- [x] `cp .env.example .env && uvicorn ...` produces zero missing-variable errors
 
 **Success Criteria covered**: SC-SETUP-001
 
@@ -119,10 +119,10 @@ WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP
 - `frontend/src/index.css` (Tailwind base/components/utilities + `@fontsource/inter`)
 
 **Definition of Done**:
-- [ ] `npm install` succeeds under npm 10.9.2
-- [ ] All directories referenced by other modules' `plan.md` exist
-- [ ] Tailwind classes render in the placeholder page (manual check)
-- [ ] Inter font loads on first render (Network tab check)
+- [x] `npm install` succeeds under npm 10.9.2
+- [x] All directories referenced by other modules' `plan.md` exist
+- [x] Tailwind classes render in the placeholder page (manual check)
+- [x] Inter font loads on first render (Network tab check)
 
 **Success Criteria covered**: SC-SETUP-002
 
@@ -141,9 +141,9 @@ WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP
 - `frontend/src/App.tsx`, `frontend/src/main.tsx` (modify — wire `QueryClientProvider`, router)
 
 **Definition of Done**:
-- [ ] `npm run dev` renders AppShell with no console errors
-- [ ] Axios instance reads `VITE_API_BASE_URL` from env
-- [ ] React Query DevTools mountable (manual)
+- [x] `npm run dev` renders AppShell with no console errors
+- [x] Axios instance reads `VITE_API_BASE_URL` from env
+- [x] React Query DevTools mountable (manual)
 
 **Success Criteria covered**: SC-SETUP-002
 
@@ -160,9 +160,9 @@ WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP
 - `frontend/package-lock.json` (commit after clean install)
 
 **Definition of Done**:
-- [ ] `cp .env.example .env && npm run dev` produces zero missing-variable errors
-- [ ] `npm install --engine-strict` passes under Node v22.17.1
-- [ ] Dependency versions are pinned (no `^` or `~` on runtime deps)
+- [x] `cp .env.example .env && npm run dev` produces zero missing-variable errors
+- [x] `npm install --engine-strict` passes under Node v22.17.1
+- [x] Dependency versions are pinned (no `^` or `~` on runtime deps)
 
 **Success Criteria covered**: SC-SETUP-001
 
@@ -176,8 +176,8 @@ WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP
 - `.gitignore` (new — covers Python, Node, IDE, env files, SQLite DB, build artefacts)
 
 **Definition of Done**:
-- [ ] `git status` after a fresh `pip install` + `npm install` + `uvicorn` start shows zero untracked artefacts
-- [ ] `.env` (not `.env.example`) is ignored
+- [x] `git status` after a fresh `pip install` + `npm install` + `uvicorn` start shows zero untracked artefacts
+- [x] `.env` (not `.env.example`) is ignored
 
 **Success Criteria covered**: SC-SETUP-002
 
@@ -191,7 +191,7 @@ WU-SETUP-1 ──┬──► WU-SETUP-2 ──► WU-SETUP-3 ──► WU-SETUP
 - `README.md` (new or modify — documents the verified steps)
 
 **Definition of Done**:
-- [ ] Fresh clone → `alembic upgrade head` → `uvicorn` start → `GET /health` 200 → `npm install && npm run dev` clean console — all complete in under 10 minutes
-- [ ] Manual FK-violation insert is rejected by SQLite
+- [x] Fresh clone → `alembic upgrade head` → `uvicorn` start → `GET /health` 200 → `npm install && npm run dev` clean console — all complete in under 10 minutes
+- [x] Manual FK-violation insert is rejected by SQLite
 
 **Success Criteria covered**: SC-SETUP-001, SC-SETUP-003

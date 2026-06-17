@@ -35,10 +35,10 @@ WU-PERM-5 (runs last, after every other module's routers exist)
 - `backend/alembic/versions/0003_seed_permissions.py` (new — one row per `{module}:{action}` across all 9 modules)
 
 **Definition of Done**:
-- [ ] `alembic upgrade head` creates the `permissions` table with `(code, module, action, description)` columns and a UNIQUE constraint on `code`
-- [ ] Seed migration inserts every `{module}:{action}` code referenced anywhere in this project's specs
-- [ ] No duplicate `code` values after seed (DB UNIQUE blocks them)
-- [ ] `alembic downgrade base` reverses both migrations cleanly
+- [x] `alembic upgrade head` creates the `permissions` table with `(code, module, action, description)` columns and a UNIQUE constraint on `code`
+- [x] Seed migration inserts every `{module}:{action}` code referenced anywhere in this project's specs
+- [x] No duplicate `code` values after seed (DB UNIQUE blocks them)
+- [x] `alembic downgrade base` reverses both migrations cleanly
 
 **Success Criteria covered**: SC-PERM-002
 
@@ -54,10 +54,10 @@ WU-PERM-5 (runs last, after every other module's routers exist)
 - `backend/app/services/permission_service.py` (new — `list_permissions(module: str | None)`)
 
 **Definition of Done**:
-- [ ] `Permission` ORM model maps cleanly to the migrated table
-- [ ] Only `PermissionResponse` exists — schema-level proof the catalogue is read-only
-- [ ] `list_permissions(module="leads")` returns only Leads-module rows; `list_permissions(None)` returns all
-- [ ] Unit tests cover both filtered and unfiltered paths
+- [x] `Permission` ORM model maps cleanly to the migrated table
+- [x] Only `PermissionResponse` exists — schema-level proof the catalogue is read-only
+- [x] `list_permissions(module="leads")` returns only Leads-module rows; `list_permissions(None)` returns all
+- [x] Unit tests cover both filtered and unfiltered paths
 
 **Success Criteria covered**: SC-PERM-001
 
@@ -72,10 +72,10 @@ WU-PERM-5 (runs last, after every other module's routers exist)
 - `backend/app/main.py` (modify — register router)
 
 **Definition of Done**:
-- [ ] `GET /permissions` returns non-empty catalogue
-- [ ] `GET /permissions?module=leads` filters correctly
-- [ ] Route-table inspection (e.g., `app.routes`) shows zero `POST`/`PATCH`/`DELETE` handlers for `/permissions`
-- [ ] Test asserts the route-table inspection programmatically (not a runtime 404 check)
+- [x] `GET /permissions` returns non-empty catalogue
+- [x] `GET /permissions?module=leads` filters correctly
+- [x] Route-table inspection (e.g., `app.routes`) shows zero `POST`/`PATCH`/`DELETE` handlers for `/permissions`
+- [x] Test asserts the route-table inspection programmatically (not a runtime 404 check)
 
 **Success Criteria covered**: SC-PERM-001, SC-PERM-002
 
@@ -91,9 +91,9 @@ WU-PERM-5 (runs last, after every other module's routers exist)
 - `frontend/src/routes/index.tsx` (modify — register `/admin/permissions`)
 
 **Definition of Done**:
-- [ ] `/admin/permissions` renders one row per permission, grouped by module
-- [ ] No "Create / Edit / Delete" UI controls present anywhere
-- [ ] Route is guarded by `RequirePermission("roles:manage")` (catalogue is admin-visible)
+- [x] `/admin/permissions` renders one row per permission, grouped by module
+- [x] No "Create / Edit / Delete" UI controls present anywhere
+- [x] Route is guarded by `RequirePermission("roles:manage")` (catalogue is admin-visible)
 
 **Success Criteria covered**: SC-PERM-001
 

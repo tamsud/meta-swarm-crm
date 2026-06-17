@@ -35,10 +35,10 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 - `backend/alembic/versions/0007_create_users.py` (new)
 
 **Definition of Done**:
-- [ ] `users` table: `(id, email UNIQUE, hashed_password, display_name, role_id FK, is_active, created_at, updated_at)`
-- [ ] Case-insensitive uniqueness on email (functional index on `lower(email)` or check constraint)
-- [ ] FK `role_id` references `roles(id)` with `ON DELETE RESTRICT`
-- [ ] Downgrade reverses cleanly
+- [x] `users` table: `(id, email UNIQUE, hashed_password, display_name, role_id FK, is_active, created_at, updated_at)`
+- [x] Case-insensitive uniqueness on email (functional index on `lower(email)` or check constraint)
+- [x] FK `role_id` references `roles(id)` with `ON DELETE RESTRICT`
+- [x] Downgrade reverses cleanly
 
 **Success Criteria covered**: SC-USR-002
 
@@ -53,10 +53,10 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 - `backend/app/schemas/user.py` (new — `UserCreate`, `UserUpdate`, `UserSelfUpdate`, `UserResponse`)
 
 **Definition of Done**:
-- [ ] `UserResponse` never serialises `hashed_password` (verified by schema field inspection in a test)
-- [ ] `UserSelfUpdate` whitelists only `display_name` (extra fields rejected with 422 via Pydantic `extra="forbid"`)
-- [ ] `UserCreate` requires `email`, `password`, `role_id`; accepts optional `display_name`
-- [ ] `UserUpdate` accepts only `role_id`, `is_active`, `display_name` (all optional, extra fields rejected with 422 via Pydantic `extra="forbid"`)
+- [x] `UserResponse` never serialises `hashed_password` (verified by schema field inspection in a test)
+- [x] `UserSelfUpdate` whitelists only `display_name` (extra fields rejected with 422 via Pydantic `extra="forbid"`)
+- [x] `UserCreate` requires `email`, `password`, `role_id`; accepts optional `display_name`
+- [x] `UserUpdate` accepts only `role_id`, `is_active`, `display_name` (all optional, extra fields rejected with 422 via Pydantic `extra="forbid"`)
 
 **Success Criteria covered**: SC-USR-002
 
@@ -70,12 +70,12 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 - `backend/app/services/user_service.py` (new — `create`, `get`, `list (search/filter/sort)`, `update`, `update_self`, `verify_credentials`)
 
 **Definition of Done**:
-- [ ] `create_user` raises `EMAIL_CONFLICT` (409) on duplicate email (case-insensitive)
-- [ ] `create_user` validates `role_id` exists, else 422
-- [ ] `update_user` validates `role_id` exists (if provided), else 422
-- [ ] `update_user` raises `LAST_ADMIN_LOCKOUT` (400) if the patch would leave zero active Admins (deactivate the last Admin, or move the last Admin to a non-Admin role)
-- [ ] `verify_credentials` returns the user only if active + password matches; rejects inactive users with a distinct code
-- [ ] All password storage goes through `hash_password` — no direct bcrypt calls in this file
+- [x] `create_user` raises `EMAIL_CONFLICT` (409) on duplicate email (case-insensitive)
+- [x] `create_user` validates `role_id` exists, else 422
+- [x] `update_user` validates `role_id` exists (if provided), else 422
+- [x] `update_user` raises `LAST_ADMIN_LOCKOUT` (400) if the patch would leave zero active Admins (deactivate the last Admin, or move the last Admin to a non-Admin role)
+- [x] `verify_credentials` returns the user only if active + password matches; rejects inactive users with a distinct code
+- [x] All password storage goes through `hash_password` — no direct bcrypt calls in this file
 
 **Success Criteria covered**: SC-USR-001, SC-USR-002
 
@@ -90,10 +90,10 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 - `backend/app/main.py` (modify — register router)
 
 **Definition of Done**:
-- [ ] All admin endpoints gated by `require_permission("users:manage")`
-- [ ] `PATCH /users/me` accepts only `display_name` (extra fields → 422)
-- [ ] Non-Admin calling `GET /users` returns 403
-- [ ] Last-admin guard surfaces from service correctly (400 with code)
+- [x] All admin endpoints gated by `require_permission("users:manage")`
+- [x] `PATCH /users/me` accepts only `display_name` (extra fields → 422)
+- [x] Non-Admin calling `GET /users` returns 403
+- [x] Last-admin guard surfaces from service correctly (400 with code)
 
 **Success Criteria covered**: SC-USR-001, SC-USR-002
 
@@ -107,9 +107,9 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 - `backend/alembic/versions/0008_seed_demo_users.py` (new — idempotent: skip if email exists) **or** `backend/app/scripts/seed_users.py`
 
 **Definition of Done**:
-- [ ] 3 demo users seeded (one per system role): Admin / Manager / Sales Rep
-- [ ] Re-running the script does NOT create duplicates
-- [ ] Passwords match the documented dev credentials (in `.env.example` or README)
+- [x] 3 demo users seeded (one per system role): Admin / Manager / Sales Rep
+- [x] Re-running the script does NOT create duplicates
+- [x] Passwords match the documented dev credentials (in `.env.example` or README)
 
 **Success Criteria covered**: SC-USR-003
 
@@ -126,9 +126,9 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 - `frontend/src/routes/index.tsx` (modify — register `/admin/users`)
 
 **Definition of Done**:
-- [ ] List page paginates + filters by role + search
-- [ ] Form's role dropdown populated from `GET /roles`
-- [ ] Deactivate button shows confirmation; surface `LAST_ADMIN_LOCKOUT` error inline
+- [x] List page paginates + filters by role + search
+- [x] Form's role dropdown populated from `GET /roles`
+- [x] Deactivate button shows confirmation; surface `LAST_ADMIN_LOCKOUT` error inline
 
 **Success Criteria covered**: SC-USR-001, SC-USR-002
 
@@ -143,8 +143,8 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 - `frontend/src/routes/index.tsx` (modify — register `/profile`)
 
 **Definition of Done**:
-- [ ] `display_name` editable; `email`, `role`, `is_active` shown read-only
-- [ ] Save calls `PATCH /users/me` and refreshes AuthContext display name
+- [x] `display_name` editable; `email`, `role`, `is_active` shown read-only
+- [x] Save calls `PATCH /users/me` and refreshes AuthContext display name
 
 **Success Criteria covered**: SC-USR-002
 
@@ -158,11 +158,11 @@ WU-USR-1 ──► WU-USR-2 ──► WU-USR-3 ──► WU-USR-4 ──┬─�
 - `backend/tests/test_users_integration.py` (new)
 
 **Definition of Done**:
-- [ ] Test: duplicate email → 409 `EMAIL_CONFLICT`
-- [ ] Test: last-admin deactivation → 400 `LAST_ADMIN_LOCKOUT`
-- [ ] Test: last-admin role change → 400 `LAST_ADMIN_LOCKOUT`
-- [ ] Test: deactivated user's login attempt → 401 `ACCOUNT_INACTIVE`
-- [ ] Test: deactivated user calling protected endpoint (e.g., `GET /users/me`) → 401 `ACCOUNT_INACTIVE`
-- [ ] Test: all 3 seed users can log in — admin@crm.local → Admin role, manager@crm.local → Manager role, sales@crm.local → Sales Rep role
+- [x] Test: duplicate email → 409 `EMAIL_CONFLICT`
+- [x] Test: last-admin deactivation → 400 `LAST_ADMIN_LOCKOUT`
+- [x] Test: last-admin role change → 400 `LAST_ADMIN_LOCKOUT`
+- [x] Test: deactivated user's login attempt → 401 `ACCOUNT_INACTIVE`
+- [x] Test: deactivated user calling protected endpoint (e.g., `GET /users/me`) → 401 `ACCOUNT_INACTIVE`
+- [x] Test: all 3 seed users can log in — admin@crm.local → Admin role, manager@crm.local → Manager role, sales@crm.local → Sales Rep role
 
 **Success Criteria covered**: SC-USR-001, SC-USR-002, SC-USR-003
