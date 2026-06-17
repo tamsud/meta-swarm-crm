@@ -6,8 +6,10 @@ import { DashboardPage } from '../pages/DashboardPage';
 import { AccountsPage } from '../pages/AccountsPage';
 import { AccountDetailPage } from '../features/accounts/AccountDetailPage';
 import { ContactsPage } from '../pages/ContactsPage';
+import { ContactDetailPage } from '../features/contacts/ContactDetailPage';
 import { LeadsPage } from '../pages/LeadsPage';
-import { PipelinePage } from '../pages/PipelinePage';
+import { OpportunitiesPage } from '../features/opportunities/OpportunitiesPage';
+import { OpportunityDetailPage } from '../features/opportunities/OpportunityDetailPage';
 import { ActivitiesPage } from '../pages/ActivitiesPage';
 import { UsersPage } from '../pages/admin/UsersPage';
 import { MockEmailPage } from '../pages/admin/MockEmailPage';
@@ -26,8 +28,10 @@ const router = createBrowserRouter([
           { path: ROUTES.ACCOUNTS, element: <AccountsPage /> },
           { path: ROUTES.ACCOUNT_DETAIL, element: <AccountDetailPage /> },
           { path: ROUTES.CONTACTS, element: <ContactsPage /> },
+          { path: ROUTES.CONTACT_DETAIL, element: <ContactDetailPage /> },
           { path: ROUTES.LEADS, element: <LeadsPage /> },
-          { path: ROUTES.OPPORTUNITIES, element: <PipelinePage /> },
+          { path: ROUTES.OPPORTUNITIES, element: <OpportunitiesPage /> },
+          { path: ROUTES.OPPORTUNITY_DETAIL, element: <OpportunityDetailPage /> },
           { path: ROUTES.ACTIVITIES, element: <ActivitiesPage /> },
           { path: ROUTES.ADMIN_USERS, element: <UsersPage /> },
           { path: ROUTES.ADMIN_MOCK_EMAIL, element: <MockEmailPage /> },
