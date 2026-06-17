@@ -197,3 +197,72 @@ class InsufficientPermissionsError(AppException):
             )
         else:
             super().__init__()
+
+
+# Contact exceptions
+
+
+class ContactNotFoundError(AppException):
+    """Raised when a contact is not found."""
+
+    status_code = 404
+    error_code = "CONTACT_NOT_FOUND"
+    detail = "Contact not found"
+
+
+class ContactEmailConflictError(AppException):
+    """Raised when creating/updating a contact with an email that already exists."""
+
+    status_code = 409
+    error_code = "EMAIL_CONFLICT"
+    detail = "A contact with this email already exists"
+
+
+class InvalidAccountIdError(AppException):
+    """Raised when an account_id does not exist."""
+
+    status_code = 422
+    error_code = "INVALID_ACCOUNT_ID"
+    detail = "The specified account does not exist"
+
+    def __init__(self, account_id: int) -> None:
+        super().__init__(
+            f"Account with ID {account_id} does not exist",
+            extra={"account_id": account_id},
+        )
+
+
+class InvalidContactIdError(AppException):
+    """Raised when a contact_id does not exist."""
+
+    status_code = 422
+    error_code = "INVALID_CONTACT_ID"
+    detail = "The specified contact does not exist"
+
+    def __init__(self, contact_id: int) -> None:
+        super().__init__(
+            f"Contact with ID {contact_id} does not exist",
+            extra={"contact_id": contact_id},
+        )
+
+
+# Opportunity exceptions
+
+
+class OpportunityNotFoundError(AppException):
+    """Raised when an opportunity is not found."""
+
+    status_code = 404
+    error_code = "OPPORTUNITY_NOT_FOUND"
+    detail = "Opportunity not found"
+
+
+# Mock Email exceptions
+
+
+class MockEmailNotFoundError(AppException):
+    """Raised when a mock email is not found."""
+
+    status_code = 404
+    error_code = "MOCK_EMAIL_NOT_FOUND"
+    detail = "Mock email not found"

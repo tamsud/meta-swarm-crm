@@ -1,5 +1,22 @@
 """Schemas package."""
 
+from app.schemas.contact import (
+    AccountBrief,
+    ContactCreate,
+    ContactResponse,
+    ContactUpdate,
+)
+from app.schemas.mock_email import (
+    MockEmailCreate,
+    MockEmailDetail,
+    MockEmailListItem,
+    MockEmailListResponse,
+)
+from app.schemas.opportunity import (
+    OpportunityCreate,
+    OpportunityResponse,
+    OpportunityUpdate,
+)
 from app.schemas.permission import PermissionResponse
 from app.schemas.response import (
     ApiError,
@@ -18,9 +35,20 @@ from app.schemas.user import (
 )
 
 __all__ = [
+    "AccountBrief",
     "ApiError",
     "ApiResponse",
+    "ContactCreate",
+    "ContactResponse",
+    "ContactUpdate",
     "ErrorResponse",
+    "MockEmailCreate",
+    "MockEmailDetail",
+    "MockEmailListItem",
+    "MockEmailListResponse",
+    "OpportunityCreate",
+    "OpportunityResponse",
+    "OpportunityUpdate",
     "PaginatedMeta",
     "PaginatedResponse",
     "PermissionResponse",
