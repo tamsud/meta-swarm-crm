@@ -12,7 +12,7 @@ from sqlalchemy import text
 from app.database import engine
 from app.exceptions import AppException
 from app.middleware import ResponseEnvelopeMiddleware
-from app.routers import accounts, auth, contacts, mock_email, opportunities, permissions, roles, users
+from app.routers import accounts, activities, auth, contacts, dashboard, leads, mock_email, opportunities, permissions, roles, seed, users
 
 
 @asynccontextmanager
@@ -129,12 +129,16 @@ def create_app() -> FastAPI:
 
     # Register routers
     app.include_router(accounts.router)
+    app.include_router(activities.router)
     app.include_router(auth.router)
     app.include_router(contacts.router)
+    app.include_router(dashboard.router)
+    app.include_router(leads.router)
     app.include_router(mock_email.router)
     app.include_router(opportunities.router)
     app.include_router(permissions.router)
     app.include_router(roles.router)
+    app.include_router(seed.router)
     app.include_router(users.router)
 
     @app.get("/health")

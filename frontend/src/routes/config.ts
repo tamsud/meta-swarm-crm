@@ -18,6 +18,7 @@ export const ROUTES = {
   CONTACTS: '/contacts',
   CONTACT_DETAIL: '/contacts/:id',
   LEADS: '/leads',
+  LEAD_DETAIL: '/leads/:id',
   OPPORTUNITIES: '/opportunities',
   OPPORTUNITY_DETAIL: '/opportunities/:id',
   ACTIVITIES: '/activities',

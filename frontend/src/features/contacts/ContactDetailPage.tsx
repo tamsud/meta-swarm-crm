@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Loader2, Users, Pencil, Mail, Phone, Briefcase, Building2, User } from 'lucide-react';
+import { ArrowLeft, Loader2, Users, Pencil, Mail, Phone, Briefcase, Building2, User, Clock } from 'lucide-react';
 import { getContact } from './api';
 import { ContactForm } from './ContactForm';
 import { ContactHistoryTab } from './ContactHistoryTab';
 import { ContactEmailsTab } from './ContactEmailsTab';
+import { listActivities } from '../activities/api';
 import { ROUTES } from '../../routes/config';
 
 type TabKey = 'overview' | 'history' | 'emails';
@@ -28,6 +29,18 @@ export function ContactDetailPage() {
     queryFn: () => getContact(contactId),
     enabled: !isNaN(contactId),
   });
+
+  const { data: recentActivityData } = useQuery({
+    queryKey: ['activities', { contact_id: contactId, limit: 1 }],
+    queryFn: () => listActivities({ contact_id: contactId, limit: 1 }),
+    enabled: !isNaN(contactId),
+  });
+
+  const daysSinceLastContact = (() => {
+    const latest = recentActivityData?.data?.[0];
+    if (!latest) return null;
+    return Math.floor((Date.now() - new Date(latest.activity_date).getTime()) / (1000 * 86400));
+  })();
 
   useEffect(() => {
     if (contact) {
@@ -171,6 +184,11 @@ export function ContactDetailPage() {
               label="Account"
               value={contact.account?.name || null}
               linkTo={contact.account ? `${ROUTES.ACCOUNTS}/${contact.account.id}` : undefined}
+            />
+            <InfoItem
+              icon={Clock}
+              label="Last Contact"
+              value={daysSinceLastContact === null ? 'Never contacted' : daysSinceLastContact === 0 ? 'Today' : `${daysSinceLastContact} day${daysSinceLastContact === 1 ? '' : 's'} ago`}
             />
           </div>
         </div>

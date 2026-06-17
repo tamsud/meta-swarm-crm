@@ -8,6 +8,7 @@ import { AccountDetailPage } from '../features/accounts/AccountDetailPage';
 import { ContactsPage } from '../pages/ContactsPage';
 import { ContactDetailPage } from '../features/contacts/ContactDetailPage';
 import { LeadsPage } from '../pages/LeadsPage';
+import { LeadDetailPage } from '../features/leads/LeadDetailPage';
 import { OpportunitiesPage } from '../features/opportunities/OpportunitiesPage';
 import { OpportunityDetailPage } from '../features/opportunities/OpportunityDetailPage';
 import { ActivitiesPage } from '../pages/ActivitiesPage';
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
           { path: ROUTES.CONTACTS, element: <ContactsPage /> },
           { path: ROUTES.CONTACT_DETAIL, element: <ContactDetailPage /> },
           { path: ROUTES.LEADS, element: <LeadsPage /> },
+          { path: ROUTES.LEAD_DETAIL, element: <LeadDetailPage /> },
           { path: ROUTES.OPPORTUNITIES, element: <OpportunitiesPage /> },
           { path: ROUTES.OPPORTUNITY_DETAIL, element: <OpportunityDetailPage /> },
           { path: ROUTES.ACTIVITIES, element: <ActivitiesPage /> },

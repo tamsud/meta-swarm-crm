@@ -246,6 +246,78 @@ class InvalidContactIdError(AppException):
         )
 
 
+# Activity exceptions
+
+
+class ActivityNotFoundError(AppException):
+    status_code = 404
+    error_code = "ACTIVITY_NOT_FOUND"
+    detail = "Activity not found"
+
+
+class ActivityNoLinkError(AppException):
+    status_code = 400
+    error_code = "ACTIVITY_NO_LINK"
+    detail = "At least one of contact_id or opportunity_id must be provided"
+
+
+class ActivityOwnershipError(AppException):
+    status_code = 403
+    error_code = "INSUFFICIENT_PERMISSIONS"
+    detail = "You do not have permission to modify this activity"
+
+
+class InvalidOpportunityIdError(AppException):
+    status_code = 422
+    error_code = "INVALID_OPPORTUNITY_ID"
+    detail = "The specified opportunity does not exist"
+
+    def __init__(self, opportunity_id: int) -> None:
+        super().__init__(
+            f"Opportunity with ID {opportunity_id} does not exist",
+            extra={"opportunity_id": opportunity_id},
+        )
+
+
+# Lead exceptions
+
+
+class LeadNotFoundError(AppException):
+    status_code = 404
+    error_code = "LEAD_NOT_FOUND"
+    detail = "Lead not found"
+
+
+class InvalidLeadTransitionError(AppException):
+    status_code = 400
+    error_code = "INVALID_LEAD_TRANSITION"
+    detail = "Invalid lead status transition"
+
+    def __init__(self, current: str, attempted: str) -> None:
+        super().__init__(
+            f"Cannot transition lead from '{current}' to '{attempted}'",
+            extra={"current_status": current, "attempted_status": attempted},
+        )
+
+
+class LeadAlreadyConvertedError(AppException):
+    status_code = 400
+    error_code = "LEAD_ALREADY_CONVERTED"
+    detail = "This lead has already been converted"
+
+    def __init__(self, opportunity_id: int) -> None:
+        super().__init__(
+            f"Lead already converted to opportunity {opportunity_id}",
+            extra={"opportunity_id": opportunity_id},
+        )
+
+
+class LeadOwnershipError(AppException):
+    status_code = 403
+    error_code = "INSUFFICIENT_PERMISSIONS"
+    detail = "You do not have permission to modify this lead"
+
+
 # Opportunity exceptions
 
 
