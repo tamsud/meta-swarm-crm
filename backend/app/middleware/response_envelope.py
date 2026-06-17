@@ -1,16 +1,18 @@
-"""Response envelope middleware for standardized API responses."""
+"""Response envelope middleware for standardized API responses.
+
+This middleware wraps successful responses in a standardized envelope format.
+Exception handling is delegated to FastAPI's exception handlers (defined in main.py)
+to avoid conflicts with Pydantic validation and other error handling.
+"""
 
 import json
 import logging
 from typing import Callable
 
 from fastapi import Request, Response
-from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
-
-from app.exceptions import AppException
 
 logger = logging.getLogger(__name__)
 
@@ -18,13 +20,22 @@ SKIP_PATHS = {"/health", "/docs", "/openapi.json", "/redoc"}
 
 
 class ResponseEnvelopeMiddleware(BaseHTTPMiddleware):
-    """Middleware that wraps all responses in a standardized envelope."""
+    """Middleware that wraps successful responses in a standardized envelope.
+
+    Exception handling is NOT done here - it's delegated to FastAPI's
+    exception handlers to avoid conflicts with Pydantic validation errors.
+    """
 
     def __init__(self, app: ASGIApp) -> None:
         super().__init__(app)
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
-        """Process request and wrap response in envelope."""
+        """Process request and wrap successful response in envelope.
+
+        Most exceptions are handled by FastAPI's exception handlers (main.py).
+        Only truly unhandled exceptions (generic Exception) are caught here
+        to ensure they return the envelope format.
+        """
         # Skip OPTIONS requests (CORS preflight) and certain paths
         if request.method == "OPTIONS" or self._should_skip(request.url.path):
             return await call_next(request)
@@ -32,13 +43,21 @@ class ResponseEnvelopeMiddleware(BaseHTTPMiddleware):
         try:
             response = await call_next(request)
             return await self._wrap_success_response(response)
-        except AppException as exc:
-            return self._create_error_response(exc)
-        except RequestValidationError as exc:
-            return self._create_validation_error_response(exc)
         except Exception as exc:
+            # Catch only truly unhandled exceptions
+            # Specific exceptions (HTTPException, AppException, etc.) are handled
+            # by FastAPI's exception handlers before reaching here
             logger.exception("Unhandled exception in request")
-            return self._create_internal_error_response(exc)
+            return JSONResponse(
+                status_code=500,
+                content={
+                    "success": False,
+                    "error": {
+                        "code": "INTERNAL_ERROR",
+                        "message": "An internal server error occurred",
+                    },
+                },
+            )
 
     def _should_skip(self, path: str) -> bool:
         """Check if path should skip envelope wrapping."""
@@ -88,46 +107,3 @@ class ResponseEnvelopeMiddleware(BaseHTTPMiddleware):
                 "meta": data["meta"],
             }
         return {"success": True, "data": data}
-
-    def _create_error_response(self, exc: AppException) -> JSONResponse:
-        """Create error response from AppException."""
-        error_body = {
-            "code": exc.error_code,
-            "message": exc.detail,
-        }
-        if exc.extra:
-            error_body.update(exc.extra)
-
-        return JSONResponse(
-            content={"success": False, "error": error_body},
-            status_code=exc.status_code,
-        )
-
-    def _create_validation_error_response(
-        self, exc: RequestValidationError
-    ) -> JSONResponse:
-        """Create error response from validation error."""
-        return JSONResponse(
-            content={
-                "success": False,
-                "error": {
-                    "code": "VALIDATION_ERROR",
-                    "message": "Request validation failed",
-                    "details": exc.errors(),
-                },
-            },
-            status_code=422,
-        )
-
-    def _create_internal_error_response(self, exc: Exception) -> JSONResponse:
-        """Create error response for unhandled exceptions."""
-        return JSONResponse(
-            content={
-                "success": False,
-                "error": {
-                    "code": "INTERNAL_ERROR",
-                    "message": "An internal server error occurred",
-                },
-            },
-            status_code=500,
-        )

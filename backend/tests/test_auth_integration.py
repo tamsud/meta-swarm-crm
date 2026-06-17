@@ -191,9 +191,10 @@ async def test_protected_endpoint_with_invalid_token_returns_401(
     )
 
     assert response.status_code == 401
-    # HTTPException returns detail directly, not wrapped in envelope
+    # HTTPException is now wrapped in envelope format
     data = response.json()
-    assert "detail" in data
+    assert data["success"] is False
+    assert "error" in data
 
 
 @pytest.mark.asyncio
@@ -212,9 +213,10 @@ async def test_protected_endpoint_with_expired_token_returns_401(
     )
 
     assert response.status_code == 401
-    # HTTPException returns detail directly, not wrapped in envelope
+    # HTTPException is now wrapped in envelope format
     data = response.json()
-    assert "detail" in data
+    assert data["success"] is False
+    assert "error" in data
 
 
 @pytest.mark.asyncio

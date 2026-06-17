@@ -257,9 +257,10 @@ async def test_deactivated_user_token_rejected_on_protected_endpoint(
     )
 
     assert resp.status_code == 401
-    # get_current_user raises HTTPException → response has "detail", not wrapped envelope
+    # HTTPException is now wrapped in envelope format
     data = resp.json()
-    assert "detail" in data
+    assert data["success"] is False
+    assert "error" in data
 
 
 # ---------------------------------------------------------------------------
